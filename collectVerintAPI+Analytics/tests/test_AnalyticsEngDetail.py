@@ -49,16 +49,14 @@ class test_AnalyticsEngagementDetailReport:
         self.title = 'retrieveAnalyticsDetailedReport'
         self.author = 'VW'
         self.URL = test_read_config_file['urls']['url']
-
         self.URL_api = 'null'
         self.collect_yesterday = test_read_config_file['latest_24hrs']['enable']     # if collect last 24hr data
-
-        ###self.URL_api_daily = test_read_config_file['urls']['url_AnalyticsDailyDetailed'] + self.yesterdaydate + '0000' + ',ending:' + self.todaydate + '0000'
-        # send message format: starting:202312190000,ending:202312200000
-        self.interval_dates = '20230118' + '0000' + ',ending:' + self.todaydate + '0000'
-        # self.interval_dates = self.yesterdaydate + '0000' + ',ending:' + self.todaydate + '0000'
+        #################### all times must be UTC for Analytics requests ###################################
+        self.interval_dates = '20231218' + '0000' + ',ending:' + self.todaydate + '0000'
         if self.collect_yesterday:
             self.interval_dates = self.yesterdaydate + '0000' + ',ending:' + self.todaydate + '0000'
+        #################### all times must be UTC for Analytics requests ###################################
+
         self.URL_api_daily = test_read_config_file['urls']['url_AnalyticsDailyDetailed'] + self.interval_dates
         self.pageSizeInt = test_read_config_file['urls']['url_AnalyticsDailyDetailed_pageSize']
         self.pageSize = "&pageSize=" + str(test_read_config_file['urls']['url_AnalyticsDailyDetailed_pageSize'])
@@ -86,7 +84,6 @@ class test_AnalyticsEngagementDetailReport:
 
         self.token_append = ''                  # includes Bearer + token
 
-        #self.num_pages = 0                     # tracks multi page response
         self.has_next_Token = ''                # next page token
         self.page_number = 0                   # first page
 
@@ -137,8 +134,6 @@ class test_AnalyticsEngagementDetailReport:
         req = requests.Request('GET', url=self.ED_send_url, headers=self.session.headers)
         self.preppedReq = req.prepare()
 
-
-        # print(f'dump headers: {self.session.headers}')
         LOGGER.debug('test_Analytics_ED_buildRequest:: finished')
         return self.session, self.preppedReq
 
@@ -149,12 +144,11 @@ class test_AnalyticsEngagementDetailReport:
         self.preppedReq = preppedReq    # prepped request
 
         LOGGER.debug('test_AnalyticdED_sendRequest:: start')
-
-        LOGGER.info(f'test_AnalyticdED_sendRequest:: request interval: {self.interval_dates}')
+        LOGGER.info(f'test_AnalyticdED_sendRequest:: request interval: "starting:" + {self.interval_dates}')
 
         try:
             # get page (may be first of many)
-            self.s = self.session.send(preppedReq, timeout=25, verify=True)   # send request
+            self.s = self.session.send(preppedReq, timeout=25, verify=False)   # send request
             # self.s session includes previously built headers/token
 
         except requests.exceptions.HTTPError as errh:
@@ -242,8 +236,8 @@ class test_AnalyticsEngagementDetailReport:
         # if multi page loop through list of dictionaries each containing a page of response data
         if self.no_calls:
             # store call data
-            for i in range(0, self.page_number+1):
-                for j in range(0, len(self.response_dict_append[i].get('records'))):
+            for i in range(0, self.page_number+1):                                      # cycle through pages
+                for j in range(0, len(self.response_dict_append[i].get('records'))):    # cycle through calls
                     self.call_data.append(self.response_dict_append[i].get('records')[j])
 
             # write calls list + headers to df

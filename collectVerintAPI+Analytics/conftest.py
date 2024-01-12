@@ -167,7 +167,7 @@ def getVerintToken(test_read_config_file):
 
   os.environ["TOKEN"] = json.dumps(json_response["AuthToken"]["token"])[1:-1]
   LOGGER.debug('conftest:: finish getVerintToken()')
-  yield os.environ["TOKEN"]
+  yield json.dumps(json_response["AuthToken"]["token"])[1:-1]
 
 # @pytest.hookimpl(hookwrapper=True)
 # def pytest_runtest_makereport(item, call):

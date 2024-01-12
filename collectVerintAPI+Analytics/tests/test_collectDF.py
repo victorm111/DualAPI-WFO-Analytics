@@ -1,6 +1,7 @@
 
 import logging
 import pandas as pd
+import re
 
 
 import os
@@ -70,11 +71,20 @@ class test_ClassCollectEngID:
         self.captVerifResult = False        # Capt verif test result False if failed result, call rec indicates rec issues found
         self.tests_failed = 0     # number of tests failed
         self.number_of_tests = 0    # number of comparison tests incl capt verif test
-        self.listTest = {"TestName":[],"Result":[], "Description":[]}   # table containing test results
+        self.listTest = {"TestName":[],"Result":[], "Description":[], "Interval_ref":[], "Interval_compare":[], "ref_num_calls":[], "compared_num_calls":[], "sw_version":[]}   # table containing test results
         self.TestResults_df = pd.DataFrame()  # as per self.listTest but a pandas df
         self.ED_session = ''        # request session
+        self.SR_session = ''        # store request session associated with request
+        self.CaptVerif_session = ''        # store request session associated with request
+
         self.ED_prepped = ''        # prepped request
         self.ED_url = ''            # prepped URL
+
+        self.CaptVerif_prepped = ''     # prepped request
+        self.CaptVerif_url = ''         # prepped URL
+
+        self.SR_prepped = ''  # prepped request
+        self.SR_url = ''  # prepped URL
 
     def test_collect_df(self, test_read_config_file, getCCaaSToken, getVerintToken) -> any:
         """run Analytics detailed Eng , Verint Capt Verif + S&R API, collect df"""
@@ -84,15 +94,18 @@ class test_ClassCollectEngID:
         test_DetailReport = test_AnalyticsEngagementDetailReport(test_read_config_file)
         LOGGER.debug('test_collect_df:: test_Analytics_ED_buildRequest()')
         self.ED_session, self.ED_prepped = test_DetailReport.test_Analytics_ED_buildRequest(getCCaaSToken)
-        LOGGER.debug('test_collect_df:: test_Analytics_ED_buildRequest()')
+        LOGGER.debug('test_collect_df:: test_Analytics_ED_sendRequest()')
         self.df_DetailEngDaily, self.AnalyticsNumber_calls, self.ED_column_headers = test_DetailReport.test_AnalyticdED_sendRequest(self.ED_session, self.ED_prepped)  # retrieves daily data
 
         LOGGER.debug(
             'test_collect_df:: init test_SearchReplay class')
         test_SRReport = test_SearchReplay(test_read_config_file)
         LOGGER.debug(
-            'test_collect_df:: init test_SearchReplay class complete, retrieve results')
-        self.df_SR = test_SRReport.test_getSearchAndReplay(getVerintToken)
+            'test_collect_df:: init test_SearchReplay class complete, build request')
+        self.SR_session, self.SR_prepped = test_SRReport.test_getSearchAndReplay_buildReq(getVerintToken)
+        LOGGER.debug(
+            'test_collect_df:: init test_SearchReplay class complete, send request')
+        self.df_SR = test_SRReport.test_getSearchAndReplay_sendReq(self.SR_session, self.SR_prepped)
 
         self.SR_Number_calls = len(self.df_SR)
 
@@ -100,14 +113,23 @@ class test_ClassCollectEngID:
         LOGGER.debug('test_collect_df:: init test_CaptureVerification class')
         test_CaptVerifReport = test_CaptureVerification(test_read_config_file)
         LOGGER.debug(
-            'test_collect_df:: test_CaptureVerification:: test_getCaptVerifCSV() request capt verif zip/csv results')
-        self.df_CaptVerificationDaily, self.captVerifResult = test_CaptVerifReport.test_getCaptVerifCSV(test_read_config_file, getVerintToken)
+            'test_collect_df:: test_CaptureVerification:: test_getCaptVerifCSV_buildreq request capt verif zip/csv results')
+        self.CaptVerif_session, self.CaptVerif_prepped = test_CaptVerifReport.test_getCaptVerifCSV_buildReq(test_read_config_file, getVerintToken)
+        self.df_CaptVerificationDaily, self.captVerifResult, self.CaptVerif_session = test_CaptVerifReport.test_getCaptVerifCSV_sendReq(self.CaptVerif_session, self.CaptVerif_prepped)
         self.number_of_tests += 1  # increment number of tests
         check.equal(self.captVerifResult, True, 'test_getCaptVerifCSV(): AWE reported call recording issues')
 
         self.listTest["TestName"].append("checkAll-AWE-CaptVerif")
         self.listTest["Description"].append(
             "Checks for AWE reported call recording capture verification issues")
+
+        self.listTest["Interval_ref"].append('starting:' + test_CaptVerifReport.Payload_start_time + ',' 'ending:' + test_CaptVerifReport.Payload_end_time)
+        self.listTest["Interval_compare"].append('n/a')
+        self.listTest["ref_num_calls"].append(len(test_CaptVerifReport.CaptVerifDaily_noCDRnotFound))
+        self.listTest["compared_num_calls"].append('n/a')
+
+        self.listTest["sw_version"].append('tbd')
+
 
         if not self.captVerifResult:
             self.tests_failed += 1
@@ -159,6 +181,16 @@ class test_ClassCollectEngID:
             try:
                 self.listTest["TestName"].append("checkAllAnalyticsEngIDsInAWE-S&R")
                 self.listTest["Description"].append("Checks all call eng IDs returned from CCaaS Analyticd ED detailed report are listed in AWE S&R")
+                # extract interval from api request
+                regex = (r'interval=(.*)&page')
+                match = re.findall(regex,self.ED_prepped.path_url)
+
+                self.listTest["Interval_ref"].append(match)
+                self.listTest["Interval_compare"].append(self.SR_prepped.body)
+                self.listTest["sw_version"].append('n/a')
+                self.listTest["ref_num_calls"].append(len(self.df_DetailEngDaily_sorted))
+                self.listTest["compared_num_calls"].append(self.SR_Number_calls)
+
                 self.number_of_tests += 1  # increment number of tests
                 assert not len(self.df_DetailEngDaily_sorted_NotRecorded), 0
 
@@ -199,8 +231,14 @@ class test_ClassCollectEngID:
             # double check AWE S&R also equal to zero calls
             try:
                 self.listTest["TestName"].append("checkZeroAnalyticsEngIDsAlsoInAWE-S&R")
-
                 self.listTest["Description"].append("Checks zero call eng IDs returned from CCaaS Analyticd ED detailed report matched in AWE S&R")
+
+                self.listTest["Interval_ref"].append(self.ED_prepped.url)
+                self.listTest["Interval_compare"].append(self.SR_prepped.body)
+                self.listTest["sw_version"].append('tbd')
+                self.listTest["ref_num_calls"].append(len(self.df_DetailEngDaily_sorted))
+                self.listTest["compared_num_calls"].append(self.SR_Number_calls)
+
                 self.number_of_tests += 1  # increment number of tests
                 assert self.SR_Number_calls == 0
 
@@ -239,8 +277,14 @@ class test_ClassCollectEngID:
             try:
                 # update test dictionary
                 self.listTest["TestName"].append("checkAllAWE-S&RcallIDsAlsoInAnalyticsEDreport")
-
                 self.listTest["Description"].append("Checks all call eng IDs returned from AWE S&R matched in CCaaS Analyticd ED detailed report")
+
+                self.listTest["Interval_ref"].append(self.SR_prepped.body)
+                self.listTest["Interval_compare"].append(self.ED_prepped.url)
+                self.listTest["sw_version"].append('tbd')
+                self.listTest["ref_num_calls"].append(self.SR_Number_calls)
+                self.listTest["compared_num_calls"].append(len(self.df_DetailEngDaily_sorted))
+
                 self.number_of_tests += 1  # increment number of tests
                 assert not len(self.df_sorted_Recorded_notIn_DetailEngDaily), 0
 
@@ -281,8 +325,14 @@ class test_ClassCollectEngID:
                     'test_compare_df:: ASSERTION check no AWE S&R calls confirm also no calls returned from Analytics')
                 # update test dictionary
                 self.listTest["TestName"].append("checkZeroAWECalls-MatchedInAnalyticsEDreport")
-
                 self.listTest["Description"].append("Checks zero call eng IDs returned from AWE S&R matched in CCaaS Analyticd ED detailed report")
+
+                self.listTest["Interval_ref"].append(self.SR_prepped.body)
+                self.listTest["Interval_compare"].append(self.ED_prepped.url)
+                self.listTest["sw_version"].append('tbd')
+                self.listTest["ref_num_calls"].append(self.SR_Number_calls)
+                self.listTest["compared_num_calls"].append(len(self.df_DetailEngDaily_sorted))
+
                 self.number_of_tests += 1  # increment number of tests
                 assert not len(self.df_DetailEngDaily), 0
 
@@ -317,6 +367,11 @@ class test_ClassCollectEngID:
                     '********** SUCCESS test_compare_df:: call detail from AWE S&R (as reference) match Analytics Eng Detailed Report ****** ')
 
         LOGGER.info(f'test_collectDF:: test_compare_df:: all API call eng ID results comparison testing finished')
+        LOGGER.info(f'test_collectDF:: test_compare_df:: Analytics reported calls: {self.AnalyticsNumber_calls}, AWE S&R calls: {self.SR_Number_calls}')
+        LOGGER.info(
+            f'test_collectDF:: test_compare_df:: AWE capt verif calls with issues: {len(self.df_CaptVerificationDaily)}')
+
+
         # LOGGER.info(f'******** test_collectDF:: test_compare_df:: tests status: {self.listTest} ')
         self.TestResults_df = pd.DataFrame.from_dict(self.listTest, orient='columns')
         return self.TestResults_df
