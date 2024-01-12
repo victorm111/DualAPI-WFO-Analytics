@@ -87,7 +87,7 @@ class test_CaptureVerification:
     self.csv_path = r'.\output\CaptVerif\*.csv'
     self.csv_headers = 'null'
     self.test_result = False    # tracks if capt verif call rec issues returned, overall test result
-
+    self.csv_noCDR_Error = ''   # write csv without CDR errors
 
     LOGGER.debug('CaptureVerification:: init finished')
     return
@@ -222,15 +222,14 @@ class test_CaptureVerification:
         # dump csv with 'no CDR found' errors removed
         # determine filename of current csv
 
-        regex = (r'CaptureVerificationIssues-(.*)csv')
-        match = re.findall(regex, f.name)
-        new_file_path_noCDR = self.zipExtractFolder + str(match) + 'csv'
+        self.csv_noCDR_Error = self.csv_file[0].replace('.csv', '_noCDR_Errors.csv')
+
         try:
-          self.CaptVerifDaily_noCDRnotFound.to_csv(new_file_path_noCDR, index=False, header=self.csv_headers)
+          self.CaptVerifDaily_noCDRnotFound.to_csv(self.csv_noCDR_Error, index=False, header=self.csv_headers)
         except:
-          LOGGER.exception('test_getSearchAndReplay::  AWE S&R csv creation error')
+          LOGGER.exception('test_getCaptVerifCSV_sendReq:: AWE Capt Verif without CDR error results csv write error')
         else:
-          LOGGER.info('test_getSearchAndReplay::  AWE S&R csv written ok')
+          LOGGER.debug('test_getCaptVerifCSV_sendReq:: AWE Capt Verif results w/o CDR errors csv written OK')
 
 
         if len(self.CaptVerifDaily_noCDRnotFound) == 0:
