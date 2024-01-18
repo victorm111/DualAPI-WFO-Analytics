@@ -204,6 +204,7 @@ class test_ClassCollectEngID:
                 assert not len(self.df_DetailEngDaily_sorted_NotRecorded), 0
 
                 #if len(self.df_DetailEngDaily_sorted_NotRecorded) != 0:
+
           except AssertionError:
 
                 self.tests_failed+=1
@@ -214,7 +215,7 @@ class test_ClassCollectEngID:
                 LOGGER.debug(
                         f'test_compare_df:: test_compare_df() ERROR !!!!!!!! listing call eng ids reported in Analytics not in Verint S&R : {self.df_DetailEngDaily_sorted_NotRecorded}')
 
-                LOGGER.debug(
+                LOGGER.info(
                         f'test_compare_df:: test_compare_df() attempt dump ERROR calls not recorded but in Analytics ED to csv in dir: {self.csv_DailyMissing_output}')
 
                 try:
