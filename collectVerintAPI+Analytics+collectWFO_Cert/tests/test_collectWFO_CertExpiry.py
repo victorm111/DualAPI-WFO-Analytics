@@ -66,15 +66,17 @@ def test_collectCertExpiry(test_read_config_file, test_results) -> any:
 
             if result:
                 new_row = {'TestName': 'checkWFOCertExpiry',
-                           'Description': "Flags error if WFO Cert expiry within 14 days", 'Result': 'FAILED', 'Interval_ref': str(today + margin), 'Interval_compare': str(datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month, cert_data.not_valid_after.day))}
-
+                           'Description': "Flags error if WFO Cert expiry within 14 days", 'Result': 'FAILED',
+                           'Interval_ref': 'current cert: ' + str(datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month,
+                                      cert_data.not_valid_after.day)), 'Interval_compare': '14 day margin from today: ' + str(today + margin)}
 
             else:
+
+
                 new_row = {'TestName': 'checkWFOCertExpiry',
                            'Description': "Flags error if WFO Cert expiry within 14 days", 'Result': 'PASSED',
-                           'Interval_ref': str(today + margin), 'Interval_compare': str(
-                        datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month,
-                                      cert_data.not_valid_after.day))}
+                           'Interval_ref': 'current cert: ' + str(datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month,
+                                      cert_data.not_valid_after.day)), 'Interval_compare': '14 day margin from today' + str(today + margin)}
 
             # assert today + margin <= datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month, cert_data.not_valid_after.day), 'WFO cert within 14 day expiry'
             df2 = pd.DataFrame(new_row, index=[0])
