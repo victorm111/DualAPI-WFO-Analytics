@@ -86,6 +86,14 @@ class test_AnalyticsEngagementDetailReport:
 
         self.has_next_Token = ''                # next page token
         self.page_number = 0                   # first page
+        self.base_report_folder = test_read_config_file['dirs']['ED_report']
+
+        # delete previous output files
+        LOGGER.debug('test_AnalyticsEngagementDetailReport:: init: delete previous output files')
+        all_files = os.listdir(self.base_report_folder)
+
+        for f in all_files:
+            os.remove(self.base_report_folder + '/' + f)
 
         LOGGER.debug('test_AnalyticsEngagementDetailReport:: init finished')
         return

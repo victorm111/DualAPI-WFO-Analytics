@@ -11,6 +11,10 @@ dirs:
   SR_to_json_output: !!str './output/SR/SR_daily.json'
   SR_to_csv_output: !!str './output/SR/testSR.csv'
   ED_daily_to_csv_output: !!str './output/EngDetailedReport/testED-Daily.csv'
+  ED_report: !!str './output/EngDetailedReport'   # output dir for Analytics Eng detailed API
+  SR_report: !!str './output/SR'                  # output dir for AWE S&R API
+  CV_report: !!str './output/CaptVerif'           # output dir for AWE CaptVerif
+
   ED_column_headers: !!str './output/EngDetailedReport/testED-DailyNotReconciled.csv' # csv showing calls in Analytics ED but not in AWE S&R
   SR_column_headers: !!str './output/SR/testSR-DailyNotReconciled.csv' # csv showing calls in Analytics ED but not in AWE S&R
   #ED_interval_to_csv_output: !!str './output/EngDetailedReport/testED-Interval.csv'
@@ -24,6 +28,11 @@ urls:
   url_wfo_captVerifapi: !!str "/api/av/capture_verification/v1/call_segments/issues/search/csv"   # AWE capt verif request url
   url_wfo_SearchReplayapi: !!str "/daswebapi/Query/ExecuteDynamicQuery"                           # AWE S&R request url
   url_wfo_token: !!str "https://wfo.a31.verintcloudservices.com/wfo/rest/core-api/auth/token"     # AWE token request url
+  #host_certCheck: !!str "wfo.a31.verintcloudservices.com"       # WFO cert endpoint check
+  host_certCheck: !!str "pool-1-smc.a31.verintcloudservices.com"
+  #host_certCheck: !!str "avayaqa3-smc-dev3-appgw.verintenglab.com"
+
+
 # CCaaS API credentials
 auth:
   clientid : !!str  "wfm"                                          # Analytics clientid

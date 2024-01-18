@@ -37,7 +37,9 @@ def main():
 
     # print output to the console
     print(f'current_working_directory: {current_working_directory}')
+    LOGGER.info(f'main() call pytest.... ')
     pytest.main(pytest_args)
+    LOGGER.info(f'main() finished pytest.... ')
     return
 
 if __name__ == "__main__":

@@ -79,15 +79,24 @@ class test_CaptureVerification:
     self.adapter = 'null'
     self.csv_file = list()    # tracks csv file status
     self.folderPath = './output/CaptVerif/'   # location where csv saved
-    self.zipPath = '.\output\CaptVerif' + '\CaptVerifCSV_session' + '.zip'
+    self.zipPath = r'.\output\CaptVerif' + r'\CaptVerifCSV_session' + '.zip'
     self.s = 'null'   # session tracker
     self.session = 'null'
     self.adapter = 'null'   # session adapter
-    self.zipExtractFolder = '.\output\CaptVerif'
+    self.zipExtractFolder = r'.\output\CaptVerif'
     self.csv_path = r'.\output\CaptVerif\*.csv'
     self.csv_headers = 'null'
     self.test_result = False    # tracks if capt verif call rec issues returned, overall test result
     self.csv_noCDR_Error = ''   # write csv without CDR errors
+
+    self.base_report_folder = test_read_config_file['dirs']['CV_report']
+
+    # delete previous output files
+    LOGGER.debug('CaptureVerification:: delete previous output files')
+    all_files = os.listdir(self.base_report_folder)
+
+    for f in all_files:
+      os.remove(self.base_report_folder + '/' + f)
 
     LOGGER.debug('CaptureVerification:: init finished')
     return

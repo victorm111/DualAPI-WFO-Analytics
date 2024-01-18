@@ -214,7 +214,7 @@ class test_ClassCollectEngID:
                 LOGGER.debug(
                         f'test_compare_df:: test_compare_df() ERROR !!!!!!!! listing call eng ids reported in Analytics not in Verint S&R : {self.df_DetailEngDaily_sorted_NotRecorded}')
 
-                LOGGER.error(
+                LOGGER.debug(
                         f'test_compare_df:: test_compare_df() attempt dump ERROR calls not recorded but in Analytics ED to csv in dir: {self.csv_DailyMissing_output}')
 
                 try:
@@ -224,7 +224,7 @@ class test_ClassCollectEngID:
                     LOGGER.exception(
                             'test_compare_df:: test_compare_df() daily csv creation error')
                 else:
-                    LOGGER.error('test_compare_df::test_compare_df() call mismatch csv written ok')
+                    LOGGER.debug('test_compare_df::test_compare_df() call mismatch csv written ok')
 
           else:
                     LOGGER.info('********** SUCCESS test_compare_df:: test_compare_df() NO call recording mismatch, all call eng IDs in Analytics ED rpt (as reference) are listed in AWE S&R **********')
@@ -253,7 +253,7 @@ class test_ClassCollectEngID:
 
             except AssertionError:
                 LOGGER.error(f'test_compare_df::test_compare_df() Analytics number calls = 0 but {self.SR_Number_calls} calls returned from AWE S&R')
-                LOGGER.error(
+                LOGGER.debug(
                     f'test_compare_df::test_compare_df() dump calls not reported in Analytics (returned 0 calls) to {self.csv_DailyMissingED_output}')
                 self.tests_failed += 1
                 # update test dictionary
@@ -304,7 +304,7 @@ class test_ClassCollectEngID:
 
                 LOGGER.error(
                     f'test_compare_df::  !!!! ERROR number of calls reported in Verint S&R but not in Analytics ED report: {len(self.df_sorted_Recorded_notIn_DetailEngDaily)}')
-                LOGGER.error(
+                LOGGER.debug(
                     f'test_compare_df::  !!!! list call eng ids reported in Verint S&R but not in Analytics ED report: {self.df_sorted_Recorded_notIn_DetailEngDaily}')
 
                 LOGGER.debug(
@@ -317,7 +317,7 @@ class test_ClassCollectEngID:
                     LOGGER.exception(
                     f'test_compare_df:: test_compare_df() ERROR calls in AWE S&R but not in Analytics {self.csv_DailyMissingED_output} csv creation error')
                 else:
-                    LOGGER.error('test_compare_df::test_compare_df() ERROR list of calls in AWE S&R but not in Analytics csv written ok')
+                    LOGGER.debug('test_compare_df::test_compare_df() ERROR list of calls in AWE S&R but not in Analytics csv written ok')
             else:
 
                 # update test dictionary
@@ -365,7 +365,7 @@ class test_ClassCollectEngID:
                     LOGGER.exception(
                         f'test_compare_df:: test_compare_df() ERROR calls in AWE S&R but not in Analytics {self.csv_DailyMissing_output} csv creation error')
                 else:
-                    LOGGER.error(
+                    LOGGER.debug(
                         'test_compare_df::test_compare_df() ERROR list of calls in AWE S&R but not in Analytics csv written ok')
             else:
                 # update test dictionary

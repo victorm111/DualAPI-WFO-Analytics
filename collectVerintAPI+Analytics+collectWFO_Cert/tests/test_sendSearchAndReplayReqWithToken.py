@@ -7,6 +7,8 @@ import json
 import logging
 import os
 from os import listdir
+
+from os import listdir
 import pandas as pd
 import shutil
 import time as time
@@ -80,6 +82,18 @@ class test_SearchReplay:
     self.csv_output = test_read_config_file['dirs']['SR_to_csv_output']
     self.csv_headers = 'null'
     self.no_calls = 0  # number of calls retrieved
+
+    # delete previous output csv files
+    # Get All List of Files
+
+    self.base_report_folder = test_read_config_file['dirs']['SR_report']
+
+    # delete previous output files
+    LOGGER.debug('test_SearchReplay:: init: delete previous output files')
+    all_files = os.listdir(self.base_report_folder)
+
+    for f in all_files:
+      os.remove(self.base_report_folder + '/' + f)
 
     LOGGER.debug('test_SearchReplay:: init finished')
     return
