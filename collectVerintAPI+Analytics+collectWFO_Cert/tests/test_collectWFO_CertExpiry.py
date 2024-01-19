@@ -38,7 +38,7 @@ def test_collectCertExpiry(test_read_config_file) -> any:
 
     with socket.create_connection((hostname, 443)) as sock:
         with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-            LOGGER.debug("test_collectCertExpiry :: SSL/TLS version:", ssock.version())
+            #LOGGER.debug("test_collectCertExpiry :: SSL/TLS version:", ssock.version())
             # print()
 
             # get cert in DER format

@@ -154,6 +154,10 @@ class test_CaptureVerification:
     self.preppedReq = req.prepare()
     #self.preppedReq.body = self.payload
 
+    LOGGER.debug(f'test_getCaptVerifCSV_buildreq:: build request headers: {req.headers}')
+    LOGGER.debug(f'test_getCaptVerifCSV_buildreq:: build request payload: {req.data}')
+    LOGGER.debug(f'test_getCaptVerifCSV_buildreq:: build request url {req.url}')
+
     LOGGER.debug('test_getCaptVerifCSV_buildreq():: finished')
     return self.session, self.preppedReq
 
@@ -163,6 +167,8 @@ class test_CaptureVerification:
     LOGGER.info(f'test_getCaptVerifCSV_sendReq:: request start')
     self.session = session          # session built previously
     self.preppedReq = preppedReq    # prepped request
+
+
 
     try:
       self.s = self.session.send(preppedReq, timeout=25, verify=False)  # send request

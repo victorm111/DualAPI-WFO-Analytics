@@ -143,6 +143,10 @@ class test_SearchReplay:
         self.preppedReq = req.prepare()
         #self.preppedReq.body = self.payload
 
+        LOGGER.debug(f'test_getSearchAndReplay_buildReq:: build request headers: {req.headers}')
+        LOGGER.debug(f'test_getSearchAndReplay_buildReq:: build request payload: {req.data}')
+        LOGGER.debug(f'test_getSearchAndReplay_buildReq:: build request url {req.url}')
+
         LOGGER.debug('test_getSearchAndReplay_buildReq:: finished')
         return self.session, self.preppedReq
 
@@ -151,8 +155,9 @@ class test_SearchReplay:
     self.session = session          # session built previously
     self.preppedReq = preppedReq    # prepped request
 
-    LOGGER.debug('test_getSearchAndReplay_sendReq:: start')
+    LOGGER.info('test_getSearchAndReplay_sendReq:: start')
     LOGGER.info(f'test_getSearchAndReplay_sendReq:: request interval: "starting:" + {self.Payload_start_time} "ending:" + {self.Payload_end_time}')
+
 
     try:
       self.s = self.session.send(preppedReq, timeout=25, verify=False)  # send request

@@ -142,6 +142,10 @@ class test_AnalyticsEngagementDetailReport:
         req = requests.Request('GET', url=self.ED_send_url, headers=self.session.headers)
         self.preppedReq = req.prepare()
 
+        LOGGER.debug(f'test_getSearchAndReplay_buildReq:: build request headers: {req.headers}')
+        LOGGER.debug(f'test_Analytics_ED_buildRequest:: build request payload: {req.data}')
+        LOGGER.debug(f'test_Analytics_ED_buildRequest:: build request url {req.url}')
+
         LOGGER.debug('test_Analytics_ED_buildRequest:: finished')
         return self.session, self.preppedReq
 
@@ -151,7 +155,7 @@ class test_AnalyticsEngagementDetailReport:
         self.session = session          # session built previously
         self.preppedReq = preppedReq    # prepped request
 
-        LOGGER.debug('test_AnalyticdED_sendRequest:: start')
+        LOGGER.info('test_AnalyticdED_sendRequest:: start')
         LOGGER.info(f'test_AnalyticdED_sendRequest:: request interval: "starting:" + {self.interval_dates}')
 
         try:
