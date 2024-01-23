@@ -29,8 +29,8 @@ urls:
   url_wfo_SearchReplayapi: !!str "/daswebapi/Query/ExecuteDynamicQuery"                           # AWE S&R request url
   url_wfo_token: !!str "https://wfo.a31.verintcloudservices.com/wfo/rest/core-api/auth/token"     # AWE token request url
   #host_certCheck: !!str "wfo.a31.verintcloudservices.com"       # WFO cert endpoint check
-  host_certCheck: !!str "pool-1-smc.a31.verintcloudservices.com"
-  #host_certCheck: !!str "avayaqa3-smc-dev3-appgw.verintenglab.com"
+  #host_certCheck: !!str "pool-1-smc.a31.verintcloudservices.com"
+  host_certCheck: !!str "avayaqa3-smc-dev3-appgw.verintenglab.com"
 
 
 # CCaaS API credentials
