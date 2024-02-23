@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 # collect code version
 
 try:
-    from is_number.version import __version__
+    from is_number.__init__ import __version__
 except ModuleNotFoundError:
     exec(open("./version.py").read())
 
