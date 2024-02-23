@@ -4,40 +4,50 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e42a936a-77b9-4a91-88e3-db9e84cf2181" name="Changes" comment="init commit version 1.1">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/definitions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/lint_files" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/logs/pytest-logs.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/output/CaptVerif/CaptVerifCSV_session.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/report/test_results.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/plain_client_socket.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_wav.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/version.py" afterDir="false" />
+    <list default="true" id="e42a936a-77b9-4a91-88e3-db9e84cf2181" name="Changes" comment="init commit version 1.2; update root dir handling">
+      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/collectVerintAPIAnalytics.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/3rdparty/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/collectVerintAPI+Analytics+collectWFO_Cert.3rdparty.pytest_html.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/collectVerintAPI+Analytics+collectWFO_Cert.3rdparty.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/collectVerintAPI+Analytics+collectWFO_Cert.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/collectVerintAPI+Analytics+collectWFO_Cert.src.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/collectVerintAPI+Analytics+collectWFO_Cert.tests.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/conf.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/index.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/Sphinx-docs/make.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/docs/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/docs/conf.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/docs/index.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/docs/make.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/is_number/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/is_number/version.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/setup.cfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/versioneer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/CaptVerif/CaptureVerificationIssues-20240223101514UTC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/CaptVerif/CaptureVerificationIssues-20240223101514UTC_noCDR_Errors.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/CaptVerif/CaptureVerificationIssues-20240223101724UTC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/CaptVerif/CaptureVerificationIssues-20240223105428UTC.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/versioneer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/pytest_in_bin.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/config/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/config/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/3rdparty/pytest_html/__version.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/3rdparty/pytest_html/__version.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/definitions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/hooks/hook-pytest_html.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/hooks/hook-pytest_html.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/pytest.ini" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/pytest.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/requirements-good.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/setup.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_AnalyticsEngDetail.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_AnalyticsEngDetail.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_all_start.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_all_start.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/output/CaptVerif/CaptVerifCSV_session.zip" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/output/CaptVerif/CaptVerifCSV_session.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/plain_client_socket.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/plain_client_socket.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_collectDF.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_collectDF.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_collectWFO_CertExpiry.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_collectWFO_CertExpiry.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_sendCaptVerifReqWithToken.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_sendCaptVerifReqWithToken.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_sendSearchAndReplayReqWithToken.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests/test_sendSearchAndReplayReqWithToken.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/version.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/version.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,6 +104,10 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\victorm\OneDrive - Avaya\Documents\PycharmProjects\collectVerintAPI+Analytics+CheckWFO_CertExpiry" />
       <recent name="C:\Users\victorm\OneDrive - Avaya\Documents\PycharmProjects\collectVerintAPI+Analytics+CheckWFO_CertExpiry\collectVerintAPI+Analytics+collectWFO_Cert\tests" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\victorm\OneDrive - Avaya\Documents\PycharmProjects\collectVerintAPI+Analytics+CheckWFO_CertExpiry\collectVerintAPI+Analytics+collectWFO_Cert" />
+      <recent name="C:\Users\victorm\OneDrive - Avaya\Documents\PycharmProjects\collectVerintAPI+Analytics+CheckWFO_CertExpiry\is_number" />
     </key>
   </component>
   <component name="RunManager">
@@ -202,13 +216,22 @@
       <option name="project" value="LOCAL" />
       <updated>1706010371636</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="init commit version 1.2; update root dir handling">
+      <option name="closed" value="true" />
+      <created>1708683683935</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1708683683935</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init commit" />
     <MESSAGE value="init commit version 1.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="init commit version 1.1" />
+    <MESSAGE value="init commit version 1.2; update root dir handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="init commit version 1.2; update root dir handling" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,5 +1,6 @@
 import os
-from setuptools import setup, find_packages
+import versioneer
+import setuptools
 
 # with open("README.md", "r") as fh:
 #     long_description = fh.read()
@@ -7,28 +8,16 @@ from setuptools import setup, find_packages
 #     requirements = [line.strip() for line in fh]
 
 # # read the requirements text file (absolute path) using read() function
-file = open("requirements.txt", "rt")
-requirements = file.read()
-#print(requirements)
-file.close()
 
-
-with open('./requirements.txt', 'rt') as f:
-    requirements = f.read()
-    #print(requirements)
-    f.close()
-
+with open('requirements.txt', 'rt') as f:
+    requirements = [line.strip() for line in f]
 
 #
 # # read the README file (absolute path) using read() function
-file = open("./README.md", "r")
-long_description = file.read()
-file.close()
+with open('README.md', 'rt') as fh:
+    long_description = fh.read()
 
-try:
-    from version import __version__
-except ModuleNotFoundError:
-    exec(open("./version.py").read())
+
 
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
@@ -41,10 +30,12 @@ def read(fname):
 
 
 print("+++++++++++++++++++++++++++++ setup.py: start testing++++++++++++++++++++++++++++++++")
-print("test code version: ", __version__)
 
-setup(
+
+setuptools.setup(
     name="API-collect",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     author="Victor Whitmarsh",
     author_email="victorm@avaya.com",
     description=("collect Verint and CCaaS Analytics API stats"),
@@ -58,8 +49,10 @@ setup(
  #       line.strip() for line in open('requirements.txt')
  #   ],
     url="",
-    packages=find_packages(include=['collectVerintAPI+Analytics+collectWFO_Cert', 'collectVerintAPI+Analytics+collectWFO_Cert.*']),
-    long_description=read('README.md'),
+    packages=setuptools.find_packages(),
+    long_description=long_description,
+    long_description_content_type = "text/x-rst",
     python_requires='>=3.6',
+    install_requires=requirements,
     entry_points={'console_scripts': ['cli_name=collectVerintAPI+Analytics+collectWFO_Cert.basic:start']}
 )

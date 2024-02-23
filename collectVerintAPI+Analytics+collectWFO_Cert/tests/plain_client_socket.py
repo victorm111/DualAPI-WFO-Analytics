@@ -17,16 +17,16 @@ import h2.connection
 import h2.events
 
 
-SERVER_NAME = 'avayaqa3-smc-dev3-appgw.verintenglab.com'
+SERVER_NAME = "avayaqa3-smc-dev3-appgw.verintenglab.com"
 SERVER_PORT = 443
 
 # generic socket and ssl configuration
 socket.setdefaulttimeout(15)
-#ctx = ssl.create_default_context(cafile=certifi.where())
+# ctx = ssl.create_default_context(cafile=certifi.where())
 ctx = ssl.create_default_context()
 ctx.verify_mode = ssl.CERT_OPTIONAL
 ctx.check_hostname = False
-ctx.set_alpn_protocols(['h2'])
+ctx.set_alpn_protocols(["h2"])
 
 # open a socket to the server and initiate TLS/SSL
 s = socket.create_connection((SERVER_NAME, SERVER_PORT))
@@ -37,15 +37,15 @@ c.initiate_connection()
 s.sendall(c.data_to_send())
 
 headers = [
-    (':method', 'GET'),
-    (':path', '/reqinfo'),
-    (':authority', SERVER_NAME),
-    (':scheme', 'https'),
+    (":method", "GET"),
+    (":path", "/reqinfo"),
+    (":authority", SERVER_NAME),
+    (":scheme", "https"),
 ]
 c.send_headers(1, headers, end_stream=True)
 s.sendall(c.data_to_send())
 
-body = b''
+body = b""
 response_stream_ended = False
 while not response_stream_ended:
     # read raw data from the socket
