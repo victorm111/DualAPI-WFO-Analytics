@@ -5,6 +5,7 @@ import ssl
 import sys
 import datetime
 import logging
+from pprint import pprint
 import pytest_check as check
 import pandas as pd
 
@@ -36,18 +37,17 @@ def test_collectCertExpiry(test_read_config_file) -> any:
     LOGGER.info(f'test_collectCertExpiry::  hostname: {hostname}')
     LOGGER.info(f'test_collectCertExpiry::  IP addresses: {ip1} {ip2}')
 
+# SSL Socket = ssock, start connection with socket.create_connection()
+
     with socket.create_connection((hostname, 443)) as sock:
         with context.wrap_socket(sock, server_hostname=hostname) as ssock:
             #LOGGER.debug("test_collectCertExpiry :: SSL/TLS version:", ssock.version())
             # print()
 
-            # get cert in DER format
-            data = ssock.getpeercert(True)
-            #print("Data:", data)
-            #print()
+            cert = ssock.getpeercert(True)
 
             # convert cert to PEM format
-            pem_data = ssl.DER_cert_to_PEM_cert(data)
+            pem_data = ssl.DER_cert_to_PEM_cert(cert)
             #print("PEM cert:", pem_data)
 
             # pem_data in string. convert to bytes using str.encode()
@@ -74,29 +74,10 @@ def test_collectCertExpiry(test_read_config_file) -> any:
                         f' test_collectCertExpiry: WFO cert outside 14 days expiry, expiry date: {cert_data.not_valid_after}')
 
 
-            # create a results row
-            #new_row = {'TestName': 'checkWFOCertExpiry', 'Description': "Flags error if WFO Cert expiry within 14 days"}
-            #
-            # if result:
-            #     new_row = {'TestName': 'checkWFOCertExpiry',
-            #                'Description': "Flags error if WFO Cert expiry within 14 days", 'Result': 'FAILED',
-            #                'Interval_ref': 'current cert: ' + str(datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month,
-            #                           cert_data.not_valid_after.day)), 'Interval_compare': '14 day margin from today: ' + str(today + margin)}
-            #
-            # else:
-            #
-            #
-            #     new_row = {'TestName': 'checkWFOCertExpiry',
-            #                'Description': "Flags error if WFO Cert expiry within 14 days", 'Result': 'PASSED',
-            #                'Interval_ref': 'current cert: ' + str(datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month,
-            #                           cert_data.not_valid_after.day)), 'Interval_compare': '14 day margin from today' + str(today + margin)}
-            #
-            # # assert today + margin <= datetime.date(cert_data.not_valid_after.year, cert_data.not_valid_after.month, cert_data.not_valid_after.day), 'WFO cert within 14 day expiry'
-            # df2 = pd.DataFrame(new_row, index=[0])
             LOGGER.info('test_collectCertExpiry::  finished')
 
             return
-            #return test_results._append(df2)
+
 
 
 

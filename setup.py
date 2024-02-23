@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 #     requirements = [line.strip() for line in fh]
 
 # # read the requirements text file (absolute path) using read() function
-file = open("./requirements.txt", "rt")
+file = open("requirements.txt", "rt")
 requirements = file.read()
 #print(requirements)
 file.close()
@@ -58,10 +58,8 @@ setup(
  #       line.strip() for line in open('requirements.txt')
  #   ],
     url="",
-    packages=find_packages(),
+    packages=find_packages(include=['collectVerintAPI+Analytics+collectWFO_Cert', 'collectVerintAPI+Analytics+collectWFO_Cert.*']),
     long_description=read('README.md'),
     python_requires='>=3.6',
-    entry_points={'console_scripts': [
-        'cli_name=main:main']
-    }
+    entry_points={'console_scripts': ['cli_name=collectVerintAPI+Analytics+collectWFO_Cert.basic:start']}
 )

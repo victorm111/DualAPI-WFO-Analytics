@@ -16,6 +16,9 @@ from dotenv import load_dotenv
 import logging
 import time as time
 from datetime import date,  timedelta
+# for use with PyInstaller
+import wrapt
+import pip_system_certs.wrapt_requests
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
@@ -25,6 +28,7 @@ load_dotenv()  # take environment variables from .env.
 today = str(date.today())
 t = time.localtime()
 current_time = time.strftime("%H:%M:%S", t)
+current = os.path.dirname(os.path.realpath(__file__))
 
 @pytest.fixture(scope="function")
 def test_read_config_file():
@@ -35,7 +39,8 @@ def test_read_config_file():
     df_config = pd.DataFrame()
 
     try:
-        with open("./config/config.yml", 'r') as file:
+        with open(os.getenv('CONFIG_PATH'), 'r') as file:
+        #with open("./config/config.yml", 'r') as file:
             test_config = yaml.safe_load(file)
             cfgfile_parse_error = 0
 
@@ -129,7 +134,15 @@ def getCCaaSToken(test_read_config_file):
 
 @pytest.fixture(scope='function')
 def getVerintToken(test_read_config_file):
-  """retrieve Verint token"""
+  """
+  purpose: retrieve Verint API auth token
+  descr: use requests module to build request
+  :param : none
+  :return : token
+  :class attributes : n/a
+  :errors raised : exception no response from WFO
+  :limitations : none
+"""
 
   LOGGER.debug('conftest:: start getVerintToken()')
   #url = "https://wfo.a31.verintcloudservices.com/wfo/rest/core-api/auth/token"

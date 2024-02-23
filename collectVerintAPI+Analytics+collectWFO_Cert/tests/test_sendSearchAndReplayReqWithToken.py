@@ -86,7 +86,7 @@ class test_SearchReplay:
     # delete previous output csv files
     # Get All List of Files
 
-    self.base_report_folder = test_read_config_file['dirs']['SR_report']
+    self.base_report_folder = os.getenv('ROOT_DIR') + test_read_config_file['dirs']['SR_report']
 
     # delete previous output files
     LOGGER.debug('test_SearchReplay:: init: delete previous output files')

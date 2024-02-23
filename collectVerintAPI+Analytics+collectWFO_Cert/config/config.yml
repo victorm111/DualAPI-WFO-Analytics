@@ -11,9 +11,9 @@ dirs:
   SR_to_json_output: !!str './output/SR/SR_daily.json'
   SR_to_csv_output: !!str './output/SR/testSR.csv'
   ED_daily_to_csv_output: !!str './output/EngDetailedReport/testED-Daily.csv'
-  ED_report: !!str './output/EngDetailedReport'   # output dir for Analytics Eng detailed API
-  SR_report: !!str './output/SR'                  # output dir for AWE S&R API
-  CV_report: !!str './output/CaptVerif'           # output dir for AWE CaptVerif
+  ED_report: !!str '\output\EngDetailedReport'   # output dir for Analytics Eng detailed API
+  SR_report: !!str '\output\SR'                  # output dir for AWE S&R API
+  CV_report: !!str '\output\CaptVerif'           # output dir for AWE CaptVerif
 
   ED_column_headers: !!str './output/EngDetailedReport/testED-DailyNotReconciled.csv' # csv showing calls in Analytics ED but not in AWE S&R
   SR_column_headers: !!str './output/SR/testSR-DailyNotReconciled.csv' # csv showing calls in Analytics ED but not in AWE S&R
@@ -39,6 +39,8 @@ auth:
   secret : !!str "nu6rSdYUVn0ooaXugpGmdkoXs2aEGdhd"               # Analytics secret
   wfo_token_user: !!str "api_user@verintnew01.prodreleasev2.com"  # Verint API user
   wfo_token_password: !!str "1_Abc_123"                           # Verint API password
+  #wfo_token_user: !!str "admin01@verintnew01.prodreleasev2.com"  # Verint API user
+  #wfo_token_password: !!str "Verint.123@@"
 
 logs:
   log_level : !!str "DEBUG" # all capital letters required for this field

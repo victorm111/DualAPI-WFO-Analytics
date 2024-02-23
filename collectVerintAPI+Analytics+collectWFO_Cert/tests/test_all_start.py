@@ -1,20 +1,21 @@
-import pytest
+
 import logging
 import os
 import sys
+
 import time as time
 from datetime import date
 # import the classes
-from test_collectDF import test_ClassCollectEngID
-from test_collectWFO_CertExpiry import test_collectCertExpiry
 
-import pytest_check as check        # soft asserts
+
+from .test_collectDF import test_ClassCollectEngID
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
 # getting the name of the directory
 current = os.path.dirname(os.path.realpath(__file__))
+print(sys.path)
 
 # Getting the parent directory name
 # where the current directory is present.
@@ -55,7 +56,8 @@ def test_collect_EngIDs(test_read_config_file, getCCaaSToken, getVerintToken) ->
         f'test_all_start:: test_collect_EngIDs:: number of tests: {len(test_results)}, tests passed: {test_results['Result'].str.contains('PASSED').sum()}, tests failed: {test_results['Result'].str.contains('FAILED').sum()}')
 
     LOGGER.info(f'test_all_start:: test_collect_EngIDs:: all routines finished, dump test results to ./report/test_results.html')
-    test_results.to_html('./report/test_results.html', justify='center')
+    os.getenv('ROOT_DIR')
+    test_results.to_html(os.getenv('ROOT_DIR')+'\\report\\test_results.html', justify='center')
     return
 
 

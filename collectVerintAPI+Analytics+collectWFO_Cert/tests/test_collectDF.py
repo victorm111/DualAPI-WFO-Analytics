@@ -11,9 +11,9 @@ from datetime import date
 import pytest_check as check        # soft asserts
 # import the classes
 
-from test_AnalyticsEngDetail import test_AnalyticsEngagementDetailReport
-from test_sendCaptVerifReqWithToken import test_CaptureVerification
-from test_sendSearchAndReplayReqWithToken import test_SearchReplay
+from . test_AnalyticsEngDetail import test_AnalyticsEngagementDetailReport
+from . test_sendCaptVerifReqWithToken import test_CaptureVerification
+from . test_sendSearchAndReplayReqWithToken import test_SearchReplay
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)

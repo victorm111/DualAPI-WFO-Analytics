@@ -15,3 +15,5 @@ version in ./version.py
  upgrade certifi frequently to have recent CA certs
  - CA .pem included in ./certs dir
  - https://certifiio.readthedocs.io/en/latest/
+
+lint files with ./lint_files exe

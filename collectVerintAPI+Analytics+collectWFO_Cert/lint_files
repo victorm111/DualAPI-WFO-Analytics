@@ -1,0 +1,3 @@
+    # lint files
+   #find tests -name "*.py" | xargs darglint                                     # tests folder
+   find -maxdepth 2 -name "*.py" |  xargs darglint                              # top level folder

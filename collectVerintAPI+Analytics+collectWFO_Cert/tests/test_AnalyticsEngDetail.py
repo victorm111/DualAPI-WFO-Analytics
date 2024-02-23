@@ -86,7 +86,7 @@ class test_AnalyticsEngagementDetailReport:
 
         self.has_next_Token = ''                # next page token
         self.page_number = 0                   # first page
-        self.base_report_folder = test_read_config_file['dirs']['ED_report']
+        self.base_report_folder = os.getenv('ROOT_DIR') + test_read_config_file['dirs']['ED_report']
 
         # delete previous output files
         LOGGER.debug('test_AnalyticsEngagementDetailReport:: init: delete previous output files')
