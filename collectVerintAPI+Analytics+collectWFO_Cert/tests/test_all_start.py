@@ -37,10 +37,22 @@ parent = os.path.dirname(current)
 
 
 def test_collect_EngIDs(test_read_config_file, getCCaaSToken, getVerintToken) -> any:
-    """ active testing starts here, called from ./main.py"""
-    """ upper level handling, hands off API collection to est_ClassCollectEngID class in test_collectDF.py """
-    """ API response call engagement ID comparison also undertaken in est_ClassCollectEngID class """
+    """ active testing starts here, called from ./main_start.py"""
+    """ upper level handling, hands off API collection to test_ClassCollectEngID class in test_collectDF.py """
+    """ API response call engagement ID comparison also undertaken in test_ClassCollectEngID class """
     """ in test_collectDF.py """
+    """
+
+Args:
+    param1: This is the first param.
+    param2: This is a second param.
+
+Returns:
+    This is a description of what is returned.
+
+Raises:
+    KeyError: Raises an exception.
+"""
 
     LOGGER.info('test_all_start:: test_collect_EngIDs:: starting ..... ')
     LOGGER.debug('test_all_start:: test_collect_EngIDs:: started, init test_ClassCollectEngID class in test_collectDF.py')

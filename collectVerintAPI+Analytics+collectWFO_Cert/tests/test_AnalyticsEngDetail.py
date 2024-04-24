@@ -39,9 +39,23 @@ parent = os.path.dirname(current)
 #yesterdaydate = (date.today() - timedelta(1)).isoformat().replace('-','')   # create yesterday's date
 
 class test_AnalyticsEngagementDetailReport:
+    """class that stores information around requesting ED historical report from Analytics
+     includes request setup, data handling
+     """
 
     def __init__(self, test_read_config_file: object) -> None:
-        """init the class"""
+        """init the class
+
+    Args:
+        param1: test_read_config_file, pandas df containing config.yml information
+        param2: n/a
+
+    Returns:
+    returns initiated class for ED historical API handling
+
+    Raises:
+        n/a
+   """
 
         LOGGER.info('test_AnalyticsEngagementDetailReport:: init start')
         self.yesterdaydate = (date.today() - timedelta(1)).isoformat().replace('-','')   # yesterday's date for daily report
@@ -101,6 +115,20 @@ class test_AnalyticsEngagementDetailReport:
 
     def test_Analytics_ED_buildRequest(self, token) -> object:
 
+        """
+    This is an example of Google style.
+
+    Args:
+        param1: This is the first param.
+        param2: This is a second param.
+
+    Returns:
+        This is a description of what is returned.
+
+    Raises:
+        KeyError: Raises an exception.
+    """
+
         self.has_next_Token = False
         self.page_number = 0
         self.next_token = token         # pick up from fixture for first request
@@ -151,6 +179,21 @@ class test_AnalyticsEngagementDetailReport:
 
     def test_AnalyticdED_sendRequest(self, session, preppedReq) -> object:
         """ send the request and create df from response"""
+
+        """
+    This is an example of Google style.
+
+    Args:
+        param1: This is the first param.
+        param2: This is a second param.
+
+    Returns:
+        This is a description of what is returned.
+
+    Raises:
+        KeyError: Raises an exception.
+    """
+
 
         self.session = session          # session built previously
         self.preppedReq = preppedReq    # prepped request

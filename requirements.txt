@@ -70,6 +70,7 @@ typeapi==2.1.2
 typing_extensions==4.6.3
 tzdata==2023.4
 urllib3==2.1.0
+versioneer==0.29
 watchdog==4.0.0
 wrapt==1.16.0
 yapf==0.40.2

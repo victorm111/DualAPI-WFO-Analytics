@@ -44,7 +44,7 @@ class test_CaptureVerification:
     def __init__(self, test_read_config_file: object) -> None:
         """init the class"""
 
-        LOGGER.debug("CaptureVerification:: init start")
+        LOGGER.debug("CaptureVerification:: class init start")
         self.yesterdaydate = (
             date.today() - timedelta(1)
         ).isoformat()  # yesterday's date for daily report
@@ -87,10 +87,8 @@ class test_CaptureVerification:
         self.retry = "null"
         self.adapter = "null"
         self.csv_file = list()  # tracks csv file status
-        os.getenv("ROOT_DIR") + test_read_config_file["dirs"]["CV_report"]
-        self.folderPath = (
-            os.getenv("ROOT_DIR") + "\output\CaptVerif\\"
-        )  # location where csv saved
+        self.folderPath = os.getenv("ROOT_DIR") + test_read_config_file["dirs"]["CV_report"] # location where csv saved
+        # self.folderPath = os.getenv("ROOT_DIR") + r"/output/CaptVerif/"  # location where csv saved
         self.zipPath = (
             os.getenv("ROOT_DIR")
             + r"\output\CaptVerif"

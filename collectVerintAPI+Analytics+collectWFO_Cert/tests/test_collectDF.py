@@ -7,6 +7,8 @@ import os
 import sys
 import time as time
 from datetime import date
+
+import pytest
 import pytest_check as check  # soft asserts
 
 # import the classes
@@ -49,6 +51,19 @@ class test_ClassCollectEngID:
     """ in start and end times"""
 
     def __init__(self, test_read_config_file: object) -> None:
+        """
+    This is an example of Google style.
+
+    Args:
+        param1: This is the first param.
+        param2: This is a second param.
+
+    Returns:
+        This is a description of what is returned.
+
+    Raises:
+        KeyError: Raises an exception.
+    """
         # Init dataframes es that store retrieved datasets
         self.df_SR = pd.DataFrame()
         self.df_CaptVerificationDaily = pd.DataFrame()
@@ -114,6 +129,19 @@ class test_ClassCollectEngID:
         self, test_read_config_file, getCCaaSToken, getVerintToken
     ) -> any:
         """run Analytics detailed Eng , Verint Capt Verif + S&R API, collect df"""
+        """
+    This is an example of Google style.
+
+    Args:
+        param1: This is the first param.
+        param2: This is a second param.
+
+    Returns:
+        This is a description of what is returned.
+
+    Raises:
+        KeyError: Raises an exception.
+    """
         # create class instance
         LOGGER.debug("test_collect_df:: started")
         LOGGER.debug(
@@ -221,7 +249,44 @@ class test_ClassCollectEngID:
         return
 
     def test_compare_df(self) -> any:
-        """compare engagement ids across df pulled from S+R, Analytics Daily Detailed reports, check in both directions"""
+        """compare engagement ids across df pulled from S+R, Analytics Daily Detailed reports, check in both directions
+
+        decision table:
+        ED calls = 0, S&R calls also = 0
+        S&R calls not in ED
+        ED calls not in S&R
+        S&R = 0, check ED = 0
+
+        4 tests:
+        calls in Analytics ED but not in S&R
+
+        check S&R calls == 0, ED calls returned 0
+
+        self.df_sorted_Recorded_notIn_DetailEngDaily I.E.  calls in S&R not in ED
+
+        no calls returned from AWE S&R, need to confirm also no calls returned from Analytics
+        assert not len(self.df_DetailEngDaily), 0
+
+
+    Args:
+        param1: class test_ClassCollectEngID
+
+    Returns:
+        self.TestResults_df, a pandas df containing test results
+
+    Raises:
+        csv write error: Raises an exception.
+
+        calls in Analytics ED but not in S&R
+        assert not len(self.df_DetailEngDaily_sorted_NotRecorded), 0
+
+        assert self.SR_Number_calls == 0 (ED calls returned 0)
+
+        assert not len(self.df_sorted_Recorded_notIn_DetailEngDaily), 0
+
+        test_compare_df::no calls returned from AWE S&R, need to confirm also no calls returned from Analytics
+        assert not len(self.df_DetailEngDaily), 0
+    """
 
         if self.AnalyticsNumber_calls != 0:
             # sort by start times
@@ -262,7 +327,8 @@ class test_ClassCollectEngID:
             LOGGER.info(
                 f"test_collectDF:: test_compare_df:: check that all CCaaS Analytics ED Eng call IDs (as reference) match all listed call Eng IDs from AWE S&R "
             )
-            # test = self.df_DetailEngDaily_sorted.engagement_id.array != self.df_SR_sorted.cd8.array # compare arrays
+            # next check if ED calls are matched to S&R calls, assign mismatched number of calls
+            # to self.df_DetailEngDaily_sorted_NotRecorded
             self.df_DetailEngDaily_sorted_NotRecorded = self.df_DetailEngDaily_sorted[
                 ~self.df_DetailEngDaily_sorted["engagement_id"].isin(self.dfSR_EngIDS)
             ]
@@ -287,6 +353,8 @@ class test_ClassCollectEngID:
                 self.listTest["compared_num_calls"].append(self.SR_Number_calls)
 
                 self.number_of_tests += 1  # increment number of tests
+
+                # now test call mismatch, calls in Analytics ED but not in S&R
                 assert not len(self.df_DetailEngDaily_sorted_NotRecorded), 0
 
                 # if len(self.df_DetailEngDaily_sorted_NotRecorded) != 0:
@@ -318,8 +386,10 @@ class test_ClassCollectEngID:
                     )
                 else:
                     LOGGER.debug(
-                        "test_compare_df::test_compare_df() call mismatch csv written ok"
-                    )
+                        "test_compare_df::test_compare_df() call mismatch csv written ok")
+                    # fail the test
+                    pytest.fail(f"test_compare_df:: test_compare_df() !!!!!!!!  ERROR \
+                    {len(self.df_DetailEngDaily_sorted_NotRecorded)} calls reported in Analytics (as reference) not in Verint S&R !!!!!!!")
 
             else:
                 LOGGER.info(
@@ -379,6 +449,8 @@ class test_ClassCollectEngID:
                     LOGGER.error(
                         "test_compare_df::test_compare_df() call mismatch csv written ok"
                     )
+                    pytest.fail(f"test_compare_df::test_compare_df() Analytics number calls = 0 but \
+                    {self.SR_Number_calls} calls returned from AWE S&R")
 
             else:
                 LOGGER.info(
@@ -447,6 +519,8 @@ class test_ClassCollectEngID:
                     LOGGER.debug(
                         "test_compare_df::test_compare_df() ERROR list of calls in AWE S&R but not in Analytics csv written ok"
                     )
+                    pytest.fail(f"test_compare_df::  !!!! ERROR number of calls reported in Verint S&R but not in \
+                    Analytics ED report: {len(self.df_sorted_Recorded_notIn_DetailEngDaily)}")
             else:
                 # update test dictionary
                 self.listTest["Result"].append("PASSED")
@@ -505,6 +579,8 @@ class test_ClassCollectEngID:
                     LOGGER.debug(
                         "test_compare_df::test_compare_df() ERROR list of calls in AWE S&R but not in Analytics csv written ok"
                     )
+                    pytest.fail(f"test_compare_df::  !!!!!!! ERROR 0 calls reported in Verint S&R but Analytics ED \
+                    reported: {len(self.df_DetailEngDaily_sorted)}")
             else:
                 # update test dictionary
 

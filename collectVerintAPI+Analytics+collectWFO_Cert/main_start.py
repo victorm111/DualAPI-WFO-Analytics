@@ -22,7 +22,7 @@ t = time.localtime()
 current_time = time.strftime("%H:%M:%S", t)
 
 
-def main():
+def main_start():
     """
     kicks off the code, populate pytest_args
 
@@ -33,27 +33,27 @@ def main():
 
     # get the current working directory
     current_working_directory = os.getcwd()
+    # enabling coverage means debug breakpoints won't work
     # args_string = "--cov=. --cov-report term --cov-report html:coverage_re"
     args_string = ""
     # setup env variables
     setup_env()
 
     # tests folder
-    pytest_args = [args_string, "collectVerintAPI+Analytics+collectWFO_Cert\\tests"]
-    # pytest_args = [args_string, current_working_directory + '\\tests']
-    LOGGER.info(f"main() test start .... ")
+    #pytest_args = [args_string, r"collectVerintAPI+Analytics+collectWFO_Cert\tests"]
+    pytest_args = [args_string, current_working_directory + '\\tests']
+    LOGGER.info("main() test start .... ")
     LOGGER.info(f"test code version: {__version__}")
     LOGGER.info(f"main() today date: {today}")
     LOGGER.info(f"main() current time: {current_time}")
-    LOGGER.info("main.py:: starting, call pytest.main with tests folder as arg")
+    LOGGER.info("main_start.py:: starting, call pytest.main with tests folder as arg")
 
     # print output to the console
     print(f"current_working_directory: {current_working_directory}")
     LOGGER.info(f"main() call pytest, pytest_args: {pytest_args}")
     pytest.main(pytest_args)
-    LOGGER.info(f"main() finished pytest.... ")
-    return
+    LOGGER.info("main() finished pytest.... ")
 
 
 if __name__ == "__main__":
-    main()
+    main_start()

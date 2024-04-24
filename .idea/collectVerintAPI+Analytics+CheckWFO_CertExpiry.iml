@@ -5,6 +5,15 @@
       <sourceFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/report" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/.pytest_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/API_collect.egg-info" />
+      <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/.pytest_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/API_collect.egg-info" />
+      <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/build" />
+      <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/output/EngDetailedReport" />
+      <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/output/SR" />
+      <excludeFolder url="file://$MODULE_DIR$/collectVerintAPI+Analytics+collectWFO_Cert/venv" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
