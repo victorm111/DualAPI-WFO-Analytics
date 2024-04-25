@@ -13,9 +13,10 @@ LOGGER = logging.getLogger(__name__)
 # collect code version
 
 try:
-    from is_number.__init__ import __version__
+    from src.APICollect.is_number.__init__ import (__version__)
 except ModuleNotFoundError:
-    exec(open("./version.py").read())
+    #exec(open(".src/APICollect/is_number/version.py").read())
+    print("package version not read from git")
 
 today = str(date.today())
 t = time.localtime()
@@ -40,7 +41,7 @@ def main_start():
     setup_env()
 
     # tests folder
-    #pytest_args = [args_string, r"collectVerintAPI+Analytics+collectWFO_Cert\tests"]
+    #pytest_args = [args_string, r"APICollect\tests"]
     pytest_args = [args_string, current_working_directory + '\\tests']
     LOGGER.info("main() test start .... ")
     LOGGER.info(f"test code version: {__version__}")

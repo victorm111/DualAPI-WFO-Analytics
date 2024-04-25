@@ -160,8 +160,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-!/collectVerintAPI+Analytics+collectWFO_Cert/output/
-!/collectVerintAPI+Analytics+collectWFO_Cert/report/
-/collectVerintAPI+Analytics+collectWFO_Cert/output/
-/collectVerintAPI+Analytics+collectWFO_Cert/report/
-/collectVerintAPI+Analytics+collectWFO_Cert/output/
+!/src/APICollect/output/
+!/src/APICollect/report/
+/src/APICollect/output/
+/src/APICollect/report/
+/src/APICollect/output/

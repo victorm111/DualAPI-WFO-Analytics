@@ -1,7 +1,16 @@
 import os
+from os import path
 import versioneer
 import setuptools
+from setuptools import setup
 
+
+# setup.cfg
+if __name__=='__main__':
+    setup()
+
+here = path.abspath((path.dirname(__file__)))
+print('setup.py path is:', here)
 
 #     long_description = fh.read()
 # with open("requirements.txt", "r") as fh:
@@ -34,7 +43,7 @@ print(
 
 
 setuptools.setup(
-    name="API-collect",
+    name="APICollect",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     author="Victor Whitmarsh",
@@ -50,12 +59,12 @@ setuptools.setup(
     #       line.strip() for line in open('requirements.txt')
     #   ],
     url="",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(where='./src/APICollect'),
     long_description=long_description,
     long_description_content_type="text/x-rst",
     python_requires=">=3.6",
     install_requires=requirements,
-    entry_points={
-        'console_scripts': ['cli_start=collectVerintAPI+Analytics+collectWFO_Cert.__main__:main'],
-    },
+    #entry_points={
+    #    'console_scripts': ['cli_start=src.APICollect.main_start:main_start'],
+    #},
 )

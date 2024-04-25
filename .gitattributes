@@ -1,2 +1,4 @@
 version.py export-subst
 collectVerintAPI+Analytics+collectWFO_Cert/is_number/version.py export-subst
+src/collectVerintAPI+Analytics+collectWFO_Cert/is_number/_version.py export-subst
+src/APICollect/_version.py export-subst

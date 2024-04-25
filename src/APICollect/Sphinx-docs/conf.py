@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "collectVerintAPI+Analytics+collectWFO_Cert"
+project = "APICollect"
 copyright = "2024, Victor Whitmarsh"
 author = "Victor Whitmarsh"
 
