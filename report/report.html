@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title id="head-title">report.html</title>
+      <style type="text/css">body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  /* do not increase min-width as some may use split screens */
+  min-width: 800px;
+  color: #999;
+}
+
+h1 {
+  font-size: 24px;
+  color: black;
+}
+
+h2 {
+  font-size: 16px;
+  color: black;
+}
+
+p {
+  color: black;
+}
+
+a {
+  color: #999;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+#environment td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  vertical-align: top;
+}
+#environment tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+#environment ul {
+  margin: 0;
+  padding: 0 20px;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed,
+.passed .col-result {
+  color: green;
+}
+
+span.skipped,
+span.xfailed,
+span.rerun,
+.skipped .col-result,
+.xfailed .col-result,
+.rerun .col-result {
+  color: orange;
+}
+
+span.error,
+span.failed,
+span.xpassed,
+.error .col-result,
+.failed .col-result,
+.xpassed .col-result {
+  color: red;
+}
+
+.col-links__extra {
+  margin-right: 3px;
+}
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+#results-table {
+  border: 1px solid #e6e6e6;
+  color: #999;
+  font-size: 12px;
+  width: 100%;
+}
+#results-table th,
+#results-table td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  text-align: left;
+}
+#results-table th {
+  font-weight: bold;
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+.logwrapper {
+  max-height: 230px;
+  overflow-y: scroll;
+  background-color: #e6e6e6;
+}
+.logwrapper.expanded {
+  max-height: none;
+}
+.logwrapper.expanded .logexpander:after {
+  content: "collapse [-]";
+}
+.logwrapper .logexpander {
+  z-index: 1;
+  position: sticky;
+  top: 10px;
+  width: max-content;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 5px 7px;
+  margin: 10px 0 10px calc(100% - 80px);
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+.logwrapper .logexpander:after {
+  content: "expand [+]";
+}
+.logwrapper .logexpander:hover {
+  color: #000;
+  border-color: #000;
+}
+.logwrapper .log {
+  min-height: 40px;
+  position: relative;
+  top: -50px;
+  height: calc(100% + 50px);
+  border: 1px solid #e6e6e6;
+  color: black;
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  padding: 5px;
+  padding-right: 80px;
+  white-space: pre-wrap;
+}
+
+div.media {
+  border: 1px solid #e6e6e6;
+  float: right;
+  height: 240px;
+  margin: 0 5px;
+  overflow: hidden;
+  width: 320px;
+}
+
+.media-container {
+  display: grid;
+  grid-template-columns: 25px auto 25px;
+  align-items: center;
+  flex: 1 1;
+  overflow: hidden;
+  height: 200px;
+}
+
+.media-container--fullscreen {
+  grid-template-columns: 0px auto 0px;
+}
+
+.media-container__nav--right,
+.media-container__nav--left {
+  text-align: center;
+  cursor: pointer;
+}
+
+.media-container__viewport {
+  cursor: pointer;
+  text-align: center;
+  height: inherit;
+}
+.media-container__viewport img,
+.media-container__viewport video {
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
+}
+
+.media__name,
+.media__counter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 0 0 25px;
+  align-items: center;
+}
+
+.collapsible td:not(.col-links) {
+  cursor: pointer;
+}
+.collapsible td:not(.col-links):hover::after {
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.col-result {
+  width: 130px;
+}
+.col-result:hover::after {
+  content: " (hide details)";
+}
+
+.col-result.collapsed:hover::after {
+  content: " (show details)";
+}
+
+#environment-header h2:hover::after {
+  content: " (hide details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#environment-header.collapsed h2:hover::after {
+  content: " (show details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+  cursor: pointer;
+}
+.sortable.desc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: -12.5px;
+  border: 10px solid #4caf50;
+  border-bottom: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.sortable.asc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: 12.5px;
+  border: 10px solid #4caf50;
+  border-top: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.hidden, .summary__reload__button.hidden {
+  display: none;
+}
+
+.summary__data {
+  flex: 0 0 550px;
+}
+.summary__reload {
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+}
+.summary__reload__button {
+  flex: 0 0 300px;
+  display: flex;
+  color: white;
+  font-weight: bold;
+  background-color: #4caf50;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.summary__reload__button:hover {
+  background-color: #46a049;
+}
+.summary__spacer {
+  flex: 0 0 550px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters,
+.collapse {
+  display: flex;
+  align-items: center;
+}
+.filters button,
+.collapse button {
+  color: #999;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.filters button:hover,
+.collapse button:hover {
+  color: #ccc;
+}
+
+.filter__label {
+  margin-right: 10px;
+}
+
+      </style>
+    
+  </head>
+  <body>
+    <h1 id="title">report.html</h1>
+    <p>Report generated on 24-Apr-2024 at 16:36:23 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+        v4.1.1</p>
+    <div id="environment-header">
+      <h2>Environment</h2>
+    </div>
+    <table id="environment"></table>
+    <!-- TEMPLATES -->
+      <template id="template_environment_row">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </template>
+    <template id="template_results-table__body--empty">
+      <tbody class="results-table-row">
+        <tr id="not-found-message">
+          <td colspan="4">No results found. Check the filters.</th>
+        </tr>
+    </template>
+    <template id="template_results-table__tbody">
+      <tbody class="results-table-row">
+        <tr class="collapsible">
+        </tr>
+        <tr class="extras-row">
+          <td class="extra" colspan="4">
+            <div class="extraHTML"></div>
+            <div class="media">
+              <div class="media-container">
+                  <div class="media-container__nav--left"><</div>
+                  <div class="media-container__viewport">
+                    <img src="" />
+                    <video controls>
+                      <source src="" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="media-container__nav--right">></div>
+                </div>
+                <div class="media__name"></div>
+                <div class="media__counter"></div>
+            </div>
+            <div class="logwrapper">
+              <div class="logexpander"></div>
+              <div class="log"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+    <!-- END TEMPLATES -->
+    <div class="summary">
+      <div class="summary__data">
+        <h2>Summary</h2>
+        <div class="additional-summary prefix">
+        </div>
+        <p class="run-count">2 tests took 00:00:13.</p>
+        <p class="filter">(Un)check the boxes to filter the results.</p>
+        <div class="summary__reload">
+          <div class="summary__reload__button hidden" onclick="location.reload()">
+            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          </div>
+        </div>
+        <div class="summary__spacer"></div>
+        <div class="controls">
+          <div class="filters">
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" />
+            <span class="failed">1 Failed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" />
+            <span class="passed">1 Passed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" disabled/>
+            <span class="skipped">0 Skipped,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xfailed" disabled/>
+            <span class="xfailed">0 Expected failures,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xpassed" disabled/>
+            <span class="xpassed">0 Unexpected passes,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="error" disabled/>
+            <span class="error">0 Errors,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="rerun" disabled/>
+            <span class="rerun">0 Reruns</span>
+          </div>
+          <div class="collapse">
+            <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;<button id="hide_all_details">Hide all details</button>
+          </div>
+        </div>
+      </div>
+      <div class="additional-summary summary">
+      </div>
+      <div class="additional-summary postfix">
+      </div>
+    </div>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable" data-column-type="result">Result</th>
+          <th class="sortable" data-column-type="testId">Test</th>
+          <th class="sortable" data-column-type="duration">Duration</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+    </table>
+  </body>
+  <footer>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.12.1&#34;, &#34;Platform&#34;: &#34;Windows-10-10.0.19045-SP0&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;8.0.0rc1&#34;, &#34;pluggy&#34;: &#34;1.3.0&#34;}, &#34;Plugins&#34;: {&#34;check&#34;: &#34;2.2.4&#34;, &#34;cov&#34;: &#34;4.1.0&#34;, &#34;html&#34;: &#34;4.1.1&#34;, &#34;instafail&#34;: &#34;0.5.0&#34;, &#34;metadata&#34;: &#34;3.0.0&#34;}, &#34;JAVA_HOME&#34;: &#34;C:\\Program Files\\Zulu\\zulu-17&#34;}, &#34;tests&#34;: {&#34;tests/test_all_start.py::test_collect_EngIDs&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;tests/test_all_start.py::test_collect_EngIDs&#34;, &#34;duration&#34;: &#34;00:00:13&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_all_start.py::test_collect_EngIDs&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:13&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;Traceback (most recent call last):\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py&amp;quot;, line 358, in test_compare_df\nAssertionError: 0\nassert not 356\n +  where 356 = len(    disposition_code_sk  ... disposition_code_description\\n451                None  ...                         None\\n450                None  ...                         None\\n445                None  ...                         None\\n443                None  ...                         None\\n442                None  ...                         None\\n..                  ...  ...                          ...\\n40                 None  ...                         None\\n36                 None  ...                         None\\n33                 None  ...                         None\\n30                 None  ...                         None\\n29                 None  ...                         None\\n\\n[356 rows x 94 columns])\n +    where     disposition_code_sk  ... disposition_code_description\\n451                None  ...                         None\\n450                None  ...                         None\\n445                None  ...                         None\\n443                None  ...                         None\\n442                None  ...                         None\\n..                  ...  ...                          ...\\n40                 None  ...                         None\\n36                 None  ...                         None\\n33                 None  ...                         None\\n30                 None  ...                         None\\n29                 None  ...                         None\\n\\n[356 rows x 94 columns] = &amp;lt;tests.test_collectDF.test_ClassCollectEngID object at 0x000001F8D33D2030&amp;gt;.df_DetailEngDaily_sorted_NotRecorded\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\runner.py&amp;quot;, line 341, in from_call\n    result: Optional[TResult] = func()\n                                ^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\runner.py&amp;quot;, line 262, in &amp;lt;lambda&amp;gt;\n    lambda: ihook(item=item, **kwds), when=when, reraise=reraise\n            ^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_hooks.py&amp;quot;, line 493, in __call__\n    return self._hookexec(self.name, self._hookimpls, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_manager.py&amp;quot;, line 115, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 113, in _multicall\n    raise exception.with_traceback(exception.__traceback__)\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 96, in _multicall\n    teardown.throw(exception)  # type: ignore[union-attr]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\threadexception.py&amp;quot;, line 87, in pytest_runtest_call\n    yield from thread_exception_runtest_hook()\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\threadexception.py&amp;quot;, line 63, in thread_exception_runtest_hook\n    yield\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 96, in _multicall\n    teardown.throw(exception)  # type: ignore[union-attr]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\unraisableexception.py&amp;quot;, line 90, in pytest_runtest_call\n    yield from unraisable_exception_runtest_hook()\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\unraisableexception.py&amp;quot;, line 65, in unraisable_exception_runtest_hook\n    yield\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 96, in _multicall\n    teardown.throw(exception)  # type: ignore[union-attr]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\logging.py&amp;quot;, line 838, in pytest_runtest_call\n    yield from self._runtest_for(item, &amp;quot;call&amp;quot;)\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\logging.py&amp;quot;, line 821, in _runtest_for\n    yield\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 96, in _multicall\n    teardown.throw(exception)  # type: ignore[union-attr]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\capture.py&amp;quot;, line 882, in pytest_runtest_call\n    return (yield)\n            ^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 96, in _multicall\n    teardown.throw(exception)  # type: ignore[union-attr]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\skipping.py&amp;quot;, line 257, in pytest_runtest_call\n    return (yield)\n            ^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 77, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\runner.py&amp;quot;, line 169, in pytest_runtest_call\n    item.runtest()\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\python.py&amp;quot;, line 1836, in runtest\n    self.ihook.pytest_pyfunc_call(pyfuncitem=self)\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_hooks.py&amp;quot;, line 493, in __call__\n    return self._hookexec(self.name, self._hookimpls, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_manager.py&amp;quot;, line 115, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 113, in _multicall\n    raise exception.with_traceback(exception.__traceback__)\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\pluggy\\_callers.py&amp;quot;, line 77, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\python.py&amp;quot;, line 193, in pytest_pyfunc_call\n    result = testfunction(**testargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_all_start.py&amp;quot;, line 63, in test_collect_EngIDs\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py&amp;quot;, line 391, in test_compare_df\n  File &amp;quot;C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\_pytest\\outcomes.py&amp;quot;, line 187, in fail\n    raise Failed(msg=reason, pytrace=pytrace)\nFailed: test_compare_df:: test_compare_df() !!!!!!!!  ERROR                     356 calls reported in Analytics (as reference) not in Verint S&amp;amp;R !!!!!!!\n\n------------------------------ Captured log setup ------------------------------\n2024-04-24 16:36:10,737,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:37,conftest:: test_read_config_file() start]\n2024-04-24 16:36:10,751,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:67,conftest:: test_read_config_file() today date: 2024-04-24]\n2024-04-24 16:36:10,751,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:68,conftest:: test_read_config_file() current time: 16:36:10]\n2024-04-24 16:36:10,751,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:73,conftest:: test_read_config_file() python version: 3.12.1]\n2024-04-24 16:36:10,752,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:76,conftest:: test_read_config_file() pytest version:  8.0.0rc1]\n2024-04-24 16:36:10,752,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:80,conftest:: test_read_config_file() finished]\n2024-04-24 16:36:10,752,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:89,conftest:: getCCaaSToken() token start]\n2024-04-24 16:36:10,753,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:97,conftest:: getCCaaSToken() build request]\n2024-04-24 16:36:10,883,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:118,conftest:: getCCaaSToken() send request]\n2024-04-24 16:36:10,887,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:1052,Starting new HTTPS connection (1): releasev2.cc.avayacloud.com:443]\n2024-04-24 16:36:11,374,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://releasev2.cc.avayacloud.com:443 &amp;quot;POST /auth/realms/IKHHJK/protocol/openid-connect/token HTTP/1.1&amp;quot; 200 None]\n2024-04-24 16:36:11,375,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:132,conftest:: getCCaaSToken() 200 OK response received]\n2024-04-24 16:36:11,376,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:139,conftest:: getCCaaSToken() finish ok]\n2024-04-24 16:36:11,376,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:155,conftest:: start getVerintToken()]\n2024-04-24 16:36:11,376,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:170,conftest:: getVerintToken request built now attempt to send request]\n2024-04-24 16:36:11,463,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:1052,Starting new HTTPS connection (1): wfo.a31.verintcloudservices.com:443]\n2024-04-24 16:36:12,433,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://wfo.a31.verintcloudservices.com:443 &amp;quot;POST /wfo/rest/core-api/auth/token HTTP/1.1&amp;quot; 200 88]\n2024-04-24 16:36:12,435,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:184,conftest:: getVerintToken response received]\n2024-04-24 16:36:12,435,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:196,conftest:: finish getVerintToken()]\n\n------------------------------ Captured log call -------------------------------\n2024-04-24 16:36:12,437,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_all_start.py:57,test_all_start:: test_collect_EngIDs:: starting ..... ]\n2024-04-24 16:36:12,437,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_all_start.py:58,test_all_start:: test_collect_EngIDs:: started, init test_ClassCollectEngID class in test_collectDF.py]\n2024-04-24 16:36:12,439,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_all_start.py:60,test_all_start:: test_collect_EngIDs:: pull df data from Verint S&amp;amp;R, Capt Verif and Analytics ED APIs]\n2024-04-24 16:36:12,439,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:146,test_collect_df:: started]\n2024-04-24 16:36:12,439,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:147,test_collect_df:: init test_AnalyticsEngagementDetailReport class]\n2024-04-24 16:36:12,440,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:60,test_AnalyticsEngagementDetailReport:: init start]\n2024-04-24 16:36:12,441,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:106,test_AnalyticsEngagementDetailReport:: init: delete previous output files]\n2024-04-24 16:36:12,442,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:112,test_AnalyticsEngagementDetailReport:: init finished]\n2024-04-24 16:36:12,442,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:151,test_collect_df:: test_Analytics_ED_buildRequest()]\n2024-04-24 16:36:12,443,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:137,test_Analytics_ED_buildRequest:: started]\n2024-04-24 16:36:12,443,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:141,test_buildIntervalRequest:: token retrieved and assembled]\n2024-04-24 16:36:12,566,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:173,test_getSearchAndReplay_buildReq:: build request headers: {&amp;#x27;Accept&amp;#x27;: &amp;#x27;application/json&amp;#x27;, &amp;#x27;User-Agent&amp;#x27;: &amp;#x27;Avaya-API-Analytics&amp;#x27;, &amp;#x27;Authorization&amp;#x27;: &amp;#x27;Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNDZNSnlmVFY4TWRzdlFfT25teUhJdm4wSE92U1RqNXdlOHpfajIydGFjIn0.eyJleHAiOjE3MTM5NzM4NzEsImlhdCI6MTcxMzk3Mjk3MSwianRpIjoiYTU5MzZmZDctY2Q5MC00OTkzLTkwOWYtOTBkZDc2MGI5MTA1IiwiaXNzIjoiaHR0cHM6Ly9yZWxlYXNldjIuY2MuYXZheWFjbG91ZC5jb20vYXV0aC9yZWFsbXMvSUtISEpLIiwiYXVkIjpbImFjY291bnQiLCJ3Zm0iXSwic3ViIjoic2VydmljZS1hY2NvdW50LXdmbSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndmbSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRydXN0ZWRfY2xpZW50Iiwib2ZmbGluZV9hY2Nlc3MiLCJSZXBvcnRpbmdfQWRtaW5pc3RyYXRvciIsInVtYV9hdXRob3JpemF0aW9uIiwiUmVwb3J0aW5nIiwiZGVmYXVsdC1yb2xlcy1pa2hoamsiLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJ3Zm0iOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC43My4xMS40IiwiY2xpZW50SWQiOiJ3Zm0iLCJpZHAiOiJmbGV4IiwidGVuYW50SWQiOiJJS0hISksiLCJncm91cHMiOltdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ZtIiwiY2xpZW50QWRkcmVzcyI6IjEwLjczLjExLjQifQ.io-vdcSJk7nGCDZ5Z61ZRiJivr74j7KrRJ2SkZxntoyVlhVX1pd3av6dUeLUWZ-zvvvz10nm1oA2NmMWbU-bYxapGaFmHlWk_H_tT3FAIAGUfQaKAwCyxvkASzysqXKJPqNnV93CO47sqH3y8f1k7TKq8x3cJAHay2zTdeGWBxmApmm_cFqg_UvTasLUfYYkYL77_4I1yRUQAI7JKR4cNu1DdXQdfkyCwazBsdf-fbbnslBTadJoIQS_BbSN_JeIj1irIlopTr9Knwhs2Ns3QV_LpDry6G_uWU5xFYwHeGHIXnWAdIqw9gkT9-wLHc91Mf9cajtt7AX8GhZGDkN98Q&amp;#x27;}]\n2024-04-24 16:36:12,567,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:174,test_Analytics_ED_buildRequest:: build request payload: []]\n2024-04-24 16:36:12,568,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:175,test_Analytics_ED_buildRequest:: build request url https://releasev2.cc.avayacloud.com/api/analytics/historical/v1beta/accounts/IKHHJK/reports/EngagementDetail?interval=starting:202312180000,ending:202404240000&amp;amp;pageSize=150]\n2024-04-24 16:36:12,568,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:177,test_Analytics_ED_buildRequest:: finished]\n2024-04-24 16:36:12,568,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:156,test_collect_df:: test_Analytics_ED_sendRequest()]\n2024-04-24 16:36:12,568,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:201,test_AnalyticdED_sendRequest:: start]\n2024-04-24 16:36:12,569,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:202,test_AnalyticdED_sendRequest:: request interval: &amp;quot;starting:&amp;quot; + 202312180000,ending:202404240000]\n2024-04-24 16:36:12,571,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:1052,Starting new HTTPS connection (1): releasev2.cc.avayacloud.com:443]\n2024-04-24 16:36:13,304,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://releasev2.cc.avayacloud.com:443 &amp;quot;GET /api/analytics/historical/v1beta/accounts/IKHHJK/reports/EngagementDetail?interval=starting:202312180000,ending:202404240000&amp;amp;pageSize=150 HTTP/1.1&amp;quot; 200 None]\n2024-04-24 16:36:13,919,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:220,test_AnalyticdED_sendRequest:: first page response received: 200, page: 0]\n2024-04-24 16:36:13,920,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:225,test_AnalyticdED_sendRequest:: first response received, cookies: &amp;lt;RequestsCookieJar[&amp;lt;Cookie JSESSIONID=33FF19CDFAE9E3752709676E6D619395 for releasev2.cc.avayacloud.com/&amp;gt;]&amp;gt;]\n2024-04-24 16:36:13,921,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:247,test_AnalyticdED_sendRequest:: cookies before multipage req: &amp;lt;RequestsCookieJar[&amp;lt;Cookie JSESSIONID=33FF19CDFAE9E3752709676E6D619395 for releasev2.cc.avayacloud.com/&amp;gt;]&amp;gt;]\n2024-04-24 16:36:13,921,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:249,test_AnalyticdED_sendRequest:: multipage before send request nextpageToken: a861ccb1-8e35-430a-b011-4394da2da89f]\n2024-04-24 16:36:13,921,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:251,test_AnalyticdED_sendRequest:: multipage request, token_append: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNDZNSnlmVFY4TWRzdlFfT25teUhJdm4wSE92U1RqNXdlOHpfajIydGFjIn0.eyJleHAiOjE3MTM5NzM4NzEsImlhdCI6MTcxMzk3Mjk3MSwianRpIjoiYTU5MzZmZDctY2Q5MC00OTkzLTkwOWYtOTBkZDc2MGI5MTA1IiwiaXNzIjoiaHR0cHM6Ly9yZWxlYXNldjIuY2MuYXZheWFjbG91ZC5jb20vYXV0aC9yZWFsbXMvSUtISEpLIiwiYXVkIjpbImFjY291bnQiLCJ3Zm0iXSwic3ViIjoic2VydmljZS1hY2NvdW50LXdmbSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndmbSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRydXN0ZWRfY2xpZW50Iiwib2ZmbGluZV9hY2Nlc3MiLCJSZXBvcnRpbmdfQWRtaW5pc3RyYXRvciIsInVtYV9hdXRob3JpemF0aW9uIiwiUmVwb3J0aW5nIiwiZGVmYXVsdC1yb2xlcy1pa2hoamsiLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJ3Zm0iOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC43My4xMS40IiwiY2xpZW50SWQiOiJ3Zm0iLCJpZHAiOiJmbGV4IiwidGVuYW50SWQiOiJJS0hISksiLCJncm91cHMiOltdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ZtIiwiY2xpZW50QWRkcmVzcyI6IjEwLjczLjExLjQifQ.io-vdcSJk7nGCDZ5Z61ZRiJivr74j7KrRJ2SkZxntoyVlhVX1pd3av6dUeLUWZ-zvvvz10nm1oA2NmMWbU-bYxapGaFmHlWk_H_tT3FAIAGUfQaKAwCyxvkASzysqXKJPqNnV93CO47sqH3y8f1k7TKq8x3cJAHay2zTdeGWBxmApmm_cFqg_UvTasLUfYYkYL77_4I1yRUQAI7JKR4cNu1DdXQdfkyCwazBsdf-fbbnslBTadJoIQS_BbSN_JeIj1irIlopTr9Knwhs2Ns3QV_LpDry6G_uWU5xFYwHeGHIXnWAdIqw9gkT9-wLHc91Mf9cajtt7AX8GhZGDkN98Q]\n2024-04-24 16:36:14,269,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://releasev2.cc.avayacloud.com:443 &amp;quot;GET /api/analytics/historical/v1beta/accounts/IKHHJK/reports/EngagementDetail?interval=starting:202312180000,ending:202404240000&amp;amp;pageSize=150&amp;amp;nextPageToken=a861ccb1-8e35-430a-b011-4394da2da89f&amp;amp;pageSize=150 HTTP/1.1&amp;quot; 200 None]\n2024-04-24 16:36:14,576,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:270,test_AnalyticdED_sendRequest:: multipage response received: 200, page: 1, number of calls: 150]\n2024-04-24 16:36:14,577,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:272,test_AnalyticdED_sendRequest:: cookies after multipage response: &amp;lt;RequestsCookieJar[&amp;lt;Cookie JSESSIONID=86C81F060690C09CE67686E0C3F4D1D5 for releasev2.cc.avayacloud.com/&amp;gt;]&amp;gt;]\n2024-04-24 16:36:14,577,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:273,test_AnalyticdED_sendRequest:: multi page response, token_append: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNDZNSnlmVFY4TWRzdlFfT25teUhJdm4wSE92U1RqNXdlOHpfajIydGFjIn0.eyJleHAiOjE3MTM5NzM4NzEsImlhdCI6MTcxMzk3Mjk3MSwianRpIjoiYTU5MzZmZDctY2Q5MC00OTkzLTkwOWYtOTBkZDc2MGI5MTA1IiwiaXNzIjoiaHR0cHM6Ly9yZWxlYXNldjIuY2MuYXZheWFjbG91ZC5jb20vYXV0aC9yZWFsbXMvSUtISEpLIiwiYXVkIjpbImFjY291bnQiLCJ3Zm0iXSwic3ViIjoic2VydmljZS1hY2NvdW50LXdmbSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndmbSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRydXN0ZWRfY2xpZW50Iiwib2ZmbGluZV9hY2Nlc3MiLCJSZXBvcnRpbmdfQWRtaW5pc3RyYXRvciIsInVtYV9hdXRob3JpemF0aW9uIiwiUmVwb3J0aW5nIiwiZGVmYXVsdC1yb2xlcy1pa2hoamsiLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJ3Zm0iOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC43My4xMS40IiwiY2xpZW50SWQiOiJ3Zm0iLCJpZHAiOiJmbGV4IiwidGVuYW50SWQiOiJJS0hISksiLCJncm91cHMiOltdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ZtIiwiY2xpZW50QWRkcmVzcyI6IjEwLjczLjExLjQifQ.io-vdcSJk7nGCDZ5Z61ZRiJivr74j7KrRJ2SkZxntoyVlhVX1pd3av6dUeLUWZ-zvvvz10nm1oA2NmMWbU-bYxapGaFmHlWk_H_tT3FAIAGUfQaKAwCyxvkASzysqXKJPqNnV93CO47sqH3y8f1k7TKq8x3cJAHay2zTdeGWBxmApmm_cFqg_UvTasLUfYYkYL77_4I1yRUQAI7JKR4cNu1DdXQdfkyCwazBsdf-fbbnslBTadJoIQS_BbSN_JeIj1irIlopTr9Knwhs2Ns3QV_LpDry6G_uWU5xFYwHeGHIXnWAdIqw9gkT9-wLHc91Mf9cajtt7AX8GhZGDkN98Q]\n2024-04-24 16:36:14,578,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:247,test_AnalyticdED_sendRequest:: cookies before multipage req: &amp;lt;RequestsCookieJar[&amp;lt;Cookie JSESSIONID=86C81F060690C09CE67686E0C3F4D1D5 for releasev2.cc.avayacloud.com/&amp;gt;]&amp;gt;]\n2024-04-24 16:36:14,578,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:249,test_AnalyticdED_sendRequest:: multipage before send request nextpageToken: 6749c141-79dc-4a8e-856d-5c189d43f9d2]\n2024-04-24 16:36:14,578,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:251,test_AnalyticdED_sendRequest:: multipage request, token_append: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNDZNSnlmVFY4TWRzdlFfT25teUhJdm4wSE92U1RqNXdlOHpfajIydGFjIn0.eyJleHAiOjE3MTM5NzM4NzEsImlhdCI6MTcxMzk3Mjk3MSwianRpIjoiYTU5MzZmZDctY2Q5MC00OTkzLTkwOWYtOTBkZDc2MGI5MTA1IiwiaXNzIjoiaHR0cHM6Ly9yZWxlYXNldjIuY2MuYXZheWFjbG91ZC5jb20vYXV0aC9yZWFsbXMvSUtISEpLIiwiYXVkIjpbImFjY291bnQiLCJ3Zm0iXSwic3ViIjoic2VydmljZS1hY2NvdW50LXdmbSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndmbSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRydXN0ZWRfY2xpZW50Iiwib2ZmbGluZV9hY2Nlc3MiLCJSZXBvcnRpbmdfQWRtaW5pc3RyYXRvciIsInVtYV9hdXRob3JpemF0aW9uIiwiUmVwb3J0aW5nIiwiZGVmYXVsdC1yb2xlcy1pa2hoamsiLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJ3Zm0iOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC43My4xMS40IiwiY2xpZW50SWQiOiJ3Zm0iLCJpZHAiOiJmbGV4IiwidGVuYW50SWQiOiJJS0hISksiLCJncm91cHMiOltdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ZtIiwiY2xpZW50QWRkcmVzcyI6IjEwLjczLjExLjQifQ.io-vdcSJk7nGCDZ5Z61ZRiJivr74j7KrRJ2SkZxntoyVlhVX1pd3av6dUeLUWZ-zvvvz10nm1oA2NmMWbU-bYxapGaFmHlWk_H_tT3FAIAGUfQaKAwCyxvkASzysqXKJPqNnV93CO47sqH3y8f1k7TKq8x3cJAHay2zTdeGWBxmApmm_cFqg_UvTasLUfYYkYL77_4I1yRUQAI7JKR4cNu1DdXQdfkyCwazBsdf-fbbnslBTadJoIQS_BbSN_JeIj1irIlopTr9Knwhs2Ns3QV_LpDry6G_uWU5xFYwHeGHIXnWAdIqw9gkT9-wLHc91Mf9cajtt7AX8GhZGDkN98Q]\n2024-04-24 16:36:14,962,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://releasev2.cc.avayacloud.com:443 &amp;quot;GET /api/analytics/historical/v1beta/accounts/IKHHJK/reports/EngagementDetail?interval=starting:202312180000,ending:202404240000&amp;amp;pageSize=150&amp;amp;nextPageToken=6749c141-79dc-4a8e-856d-5c189d43f9d2&amp;amp;pageSize=150 HTTP/1.1&amp;quot; 200 None]\n2024-04-24 16:36:15,237,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:270,test_AnalyticdED_sendRequest:: multipage response received: 200, page: 2, number of calls: 150]\n2024-04-24 16:36:15,237,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:272,test_AnalyticdED_sendRequest:: cookies after multipage response: &amp;lt;RequestsCookieJar[&amp;lt;Cookie JSESSIONID=E3B96E5EA648060F74E48966EC40573F for releasev2.cc.avayacloud.com/&amp;gt;]&amp;gt;]\n2024-04-24 16:36:15,237,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:273,test_AnalyticdED_sendRequest:: multi page response, token_append: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNDZNSnlmVFY4TWRzdlFfT25teUhJdm4wSE92U1RqNXdlOHpfajIydGFjIn0.eyJleHAiOjE3MTM5NzM4NzEsImlhdCI6MTcxMzk3Mjk3MSwianRpIjoiYTU5MzZmZDctY2Q5MC00OTkzLTkwOWYtOTBkZDc2MGI5MTA1IiwiaXNzIjoiaHR0cHM6Ly9yZWxlYXNldjIuY2MuYXZheWFjbG91ZC5jb20vYXV0aC9yZWFsbXMvSUtISEpLIiwiYXVkIjpbImFjY291bnQiLCJ3Zm0iXSwic3ViIjoic2VydmljZS1hY2NvdW50LXdmbSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndmbSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRydXN0ZWRfY2xpZW50Iiwib2ZmbGluZV9hY2Nlc3MiLCJSZXBvcnRpbmdfQWRtaW5pc3RyYXRvciIsInVtYV9hdXRob3JpemF0aW9uIiwiUmVwb3J0aW5nIiwiZGVmYXVsdC1yb2xlcy1pa2hoamsiLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJ3Zm0iOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC43My4xMS40IiwiY2xpZW50SWQiOiJ3Zm0iLCJpZHAiOiJmbGV4IiwidGVuYW50SWQiOiJJS0hISksiLCJncm91cHMiOltdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ZtIiwiY2xpZW50QWRkcmVzcyI6IjEwLjczLjExLjQifQ.io-vdcSJk7nGCDZ5Z61ZRiJivr74j7KrRJ2SkZxntoyVlhVX1pd3av6dUeLUWZ-zvvvz10nm1oA2NmMWbU-bYxapGaFmHlWk_H_tT3FAIAGUfQaKAwCyxvkASzysqXKJPqNnV93CO47sqH3y8f1k7TKq8x3cJAHay2zTdeGWBxmApmm_cFqg_UvTasLUfYYkYL77_4I1yRUQAI7JKR4cNu1DdXQdfkyCwazBsdf-fbbnslBTadJoIQS_BbSN_JeIj1irIlopTr9Knwhs2Ns3QV_LpDry6G_uWU5xFYwHeGHIXnWAdIqw9gkT9-wLHc91Mf9cajtt7AX8GhZGDkN98Q]\n2024-04-24 16:36:15,237,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:247,test_AnalyticdED_sendRequest:: cookies before multipage req: &amp;lt;RequestsCookieJar[&amp;lt;Cookie JSESSIONID=E3B96E5EA648060F74E48966EC40573F for releasev2.cc.avayacloud.com/&amp;gt;]&amp;gt;]\n2024-04-24 16:36:15,237,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:249,test_AnalyticdED_sendRequest:: multipage before send request nextpageToken: 0dc8fb1f-dbcd-4503-a9fc-982430aee433]\n2024-04-24 16:36:15,238,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:251,test_AnalyticdED_sendRequest:: multipage request, token_append: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNDZNSnlmVFY4TWRzdlFfT25teUhJdm4wSE92U1RqNXdlOHpfajIydGFjIn0.eyJleHAiOjE3MTM5NzM4NzEsImlhdCI6MTcxMzk3Mjk3MSwianRpIjoiYTU5MzZmZDctY2Q5MC00OTkzLTkwOWYtOTBkZDc2MGI5MTA1IiwiaXNzIjoiaHR0cHM6Ly9yZWxlYXNldjIuY2MuYXZheWFjbG91ZC5jb20vYXV0aC9yZWFsbXMvSUtISEpLIiwiYXVkIjpbImFjY291bnQiLCJ3Zm0iXSwic3ViIjoic2VydmljZS1hY2NvdW50LXdmbSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndmbSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRydXN0ZWRfY2xpZW50Iiwib2ZmbGluZV9hY2Nlc3MiLCJSZXBvcnRpbmdfQWRtaW5pc3RyYXRvciIsInVtYV9hdXRob3JpemF0aW9uIiwiUmVwb3J0aW5nIiwiZGVmYXVsdC1yb2xlcy1pa2hoamsiLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJ3Zm0iOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC43My4xMS40IiwiY2xpZW50SWQiOiJ3Zm0iLCJpZHAiOiJmbGV4IiwidGVuYW50SWQiOiJJS0hISksiLCJncm91cHMiOltdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ZtIiwiY2xpZW50QWRkcmVzcyI6IjEwLjczLjExLjQifQ.io-vdcSJk7nGCDZ5Z61ZRiJivr74j7KrRJ2SkZxntoyVlhVX1pd3av6dUeLUWZ-zvvvz10nm1oA2NmMWbU-bYxapGaFmHlWk_H_tT3FAIAGUfQaKAwCyxvkASzysqXKJPqNnV93CO47sqH3y8f1k7TKq8x3cJAHay2zTdeGWBxmApmm_cFqg_UvTasLUfYYkYL77_4I1yRUQAI7JKR4cNu1DdXQdfkyCwazBsdf-fbbnslBTadJoIQS_BbSN_JeIj1irIlopTr9Knwhs2Ns3QV_LpDry6G_uWU5xFYwHeGHIXnWAdIqw9gkT9-wLHc91Mf9cajtt7AX8GhZGDkN98Q]\n2024-04-24 16:36:15,533,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://releasev2.cc.avayacloud.com:443 &amp;quot;GET /api/analytics/historical/v1beta/accounts/IKHHJK/reports/EngagementDetail?interval=starting:202312180000,ending:202404240000&amp;amp;pageSize=150&amp;amp;nextPageToken=0dc8fb1f-dbcd-4503-a9fc-982430aee433&amp;amp;pageSize=150 HTTP/1.1&amp;quot; 200 None]\n2024-04-24 16:36:15,534,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:270,test_AnalyticdED_sendRequest:: multipage response received: 200, page: 3, number of calls: 2]\n2024-04-24 16:36:15,535,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:272,test_AnalyticdED_sendRequest:: cookies after multipage response: &amp;lt;RequestsCookieJar[&amp;lt;Cookie JSESSIONID=4B0F469CB28CA6C0A28B9FBDDBFBA0E8 for releasev2.cc.avayacloud.com/&amp;gt;]&amp;gt;]\n2024-04-24 16:36:15,535,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:273,test_AnalyticdED_sendRequest:: multi page response, token_append: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNDZNSnlmVFY4TWRzdlFfT25teUhJdm4wSE92U1RqNXdlOHpfajIydGFjIn0.eyJleHAiOjE3MTM5NzM4NzEsImlhdCI6MTcxMzk3Mjk3MSwianRpIjoiYTU5MzZmZDctY2Q5MC00OTkzLTkwOWYtOTBkZDc2MGI5MTA1IiwiaXNzIjoiaHR0cHM6Ly9yZWxlYXNldjIuY2MuYXZheWFjbG91ZC5jb20vYXV0aC9yZWFsbXMvSUtISEpLIiwiYXVkIjpbImFjY291bnQiLCJ3Zm0iXSwic3ViIjoic2VydmljZS1hY2NvdW50LXdmbSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndmbSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRydXN0ZWRfY2xpZW50Iiwib2ZmbGluZV9hY2Nlc3MiLCJSZXBvcnRpbmdfQWRtaW5pc3RyYXRvciIsInVtYV9hdXRob3JpemF0aW9uIiwiUmVwb3J0aW5nIiwiZGVmYXVsdC1yb2xlcy1pa2hoamsiLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJ3Zm0iOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC43My4xMS40IiwiY2xpZW50SWQiOiJ3Zm0iLCJpZHAiOiJmbGV4IiwidGVuYW50SWQiOiJJS0hISksiLCJncm91cHMiOltdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ZtIiwiY2xpZW50QWRkcmVzcyI6IjEwLjczLjExLjQifQ.io-vdcSJk7nGCDZ5Z61ZRiJivr74j7KrRJ2SkZxntoyVlhVX1pd3av6dUeLUWZ-zvvvz10nm1oA2NmMWbU-bYxapGaFmHlWk_H_tT3FAIAGUfQaKAwCyxvkASzysqXKJPqNnV93CO47sqH3y8f1k7TKq8x3cJAHay2zTdeGWBxmApmm_cFqg_UvTasLUfYYkYL77_4I1yRUQAI7JKR4cNu1DdXQdfkyCwazBsdf-fbbnslBTadJoIQS_BbSN_JeIj1irIlopTr9Knwhs2Ns3QV_LpDry6G_uWU5xFYwHeGHIXnWAdIqw9gkT9-wLHc91Mf9cajtt7AX8GhZGDkN98Q]\n2024-04-24 16:36:15,535,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:276,test_AnalyticdED_sendRequest:: end multi-page handling, page: 3]\n2024-04-24 16:36:15,535,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:289,test_AnalyticdED_sendRequest:: calls found: 452, number pages: 3, pageSize requested: 150]\n2024-04-24 16:36:15,540,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:303,test_AnalyticdED_sendRequest:: Analytics DetailedReportDaily_df create OK, attempt df dump to csv to ./output/EngDetailedReport/testED-Daily.csv]\n2024-04-24 16:36:15,553,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:314,test_AnalyticdED_sendRequest::  daily csv written ok]\n2024-04-24 16:36:15,553,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_AnalyticsEngDetail.py:319,test_AnalyticdED_sendRequest:: API test routines finished]\n2024-04-24 16:36:15,554,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:165,test_collect_df:: init test_SearchReplay class]\n2024-04-24 16:36:15,554,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:51,test_SearchReplay:: init start]\n2024-04-24 16:36:15,555,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:101,test_SearchReplay:: init: delete previous output files]\n2024-04-24 16:36:15,556,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:107,test_SearchReplay:: init finished]\n2024-04-24 16:36:15,556,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:167,test_collect_df:: init test_SearchReplay class complete, build request]\n2024-04-24 16:36:15,557,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:114,test_getSearchAndReplay_buildReq():: started]\n2024-04-24 16:36:15,557,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:118,test_getSearchAndReplay_buildReq:: token retrieved, build request]\n2024-04-24 16:36:15,688,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:152,test_getSearchAndReplay_buildReq:: request start: 2023-12-18T00:00:00.000Z]\n2024-04-24 16:36:15,688,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:155,test_getSearchAndReplay_buildReq:: request start: 2024-04-24T00:00:00.000Z]\n2024-04-24 16:36:15,689,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:168,test_getSearchAndReplay_buildReq:: build request headers: {&amp;#x27;User-Agent&amp;#x27;: &amp;#x27;python-requests/2.31.0&amp;#x27;, &amp;#x27;Accept-Encoding&amp;#x27;: &amp;#x27;gzip, deflate&amp;#x27;, &amp;#x27;Accept&amp;#x27;: &amp;#x27;application/json&amp;#x27;, &amp;#x27;Connection&amp;#x27;: &amp;#x27;keep-alive&amp;#x27;, &amp;#x27;Verint-Session-ID&amp;#x27;: &amp;#x27;42334&amp;#x27;, &amp;#x27;Content-Type&amp;#x27;: &amp;#x27;application/json&amp;#x27;, &amp;#x27;Impact360AuthToken&amp;#x27;: &amp;#x27;UvF18RC0u7s1eoh3&amp;#x27;}]\n2024-04-24 16:36:15,689,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:171,test_getSearchAndReplay_buildReq:: build request payload: {&amp;quot;period&amp;quot;: {&amp;quot;beginPeriod&amp;quot;: &amp;quot;2023-12-18T00:00:00.000Z&amp;quot;, &amp;quot;endPeriod&amp;quot;: &amp;quot;2024-04-24T00:00:00.000Z&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;Absolute&amp;quot;}}]\n2024-04-24 16:36:15,689,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:174,test_getSearchAndReplay_buildReq:: build request url https://wfo.a31.verintcloudservices.com/daswebapi/Query/ExecuteDynamicQuery]\n2024-04-24 16:36:15,689,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:176,test_getSearchAndReplay_buildReq:: finished]\n2024-04-24 16:36:15,690,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:174,test_collect_df:: init test_SearchReplay class complete, send request]\n2024-04-24 16:36:15,690,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:183,test_getSearchAndReplay_sendReq:: start]\n2024-04-24 16:36:15,690,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:184,test_getSearchAndReplay_sendReq:: request interval: &amp;quot;starting:&amp;quot; + 2023-12-18T00:00:00.000Z &amp;quot;ending:&amp;quot; + 2024-04-24T00:00:00.000Z]\n2024-04-24 16:36:15,691,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:1052,Starting new HTTPS connection (1): wfo.a31.verintcloudservices.com:443]\n2024-04-24 16:36:21,992,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://wfo.a31.verintcloudservices.com:443 &amp;quot;POST /daswebapi/Query/ExecuteDynamicQuery HTTP/1.1&amp;quot; 200 14634]\n2024-04-24 16:36:21,994,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:213,test_getSearchAndReplay:: response received: 200]\n2024-04-24 16:36:21,996,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:222,test_getSearchAndReplay:: test_getSearchAndReplay() json unpacked ok]\n2024-04-24 16:36:21,996,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:232,test_getSearchAndReplay:: test_getSearchAndReplay() number of calls returned: 96]\n2024-04-24 16:36:21,996,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:237,test_getSearchAndReplay:: AWE test_getSearchAndReplay() calls retrieved, attempt write to csv at location: ./output/SR/testSR.csv]\n2024-04-24 16:36:22,446,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:274,test_getSearchAndReplay::  AWE S&amp;amp;R csv written ok]\n2024-04-24 16:36:22,446,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendSearchAndReplayReqWithToken.py:281,test_getSearchAndReplay::  API test routines finished]\n2024-04-24 16:36:22,447,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:184,test_collect_df:: init test_CaptureVerification class]\n2024-04-24 16:36:22,447,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:47,CaptureVerification:: class init start]\n2024-04-24 16:36:22,448,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:114,CaptureVerification:: delete previous output files]\n2024-04-24 16:36:22,451,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:120,CaptureVerification:: init finished]\n2024-04-24 16:36:22,451,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:186,test_collect_df:: test_CaptureVerification:: test_getCaptVerifCSV_buildreq request capt verif zip/csv results]\n2024-04-24 16:36:22,452,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:135,test_getCaptVerifCSV_buildreq():: started]\n2024-04-24 16:36:22,452,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:140,test_getCaptVerifCSV_buildreq:: token retrieved]\n2024-04-24 16:36:22,593,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:182,test_getCaptVerifCSV_buildreq:: build request headers: {&amp;#x27;User-Agent&amp;#x27;: &amp;#x27;python-requests/2.31.0&amp;#x27;, &amp;#x27;Accept-Encoding&amp;#x27;: &amp;#x27;gzip, deflate&amp;#x27;, &amp;#x27;Accept&amp;#x27;: &amp;#x27;application/json&amp;#x27;, &amp;#x27;Connection&amp;#x27;: &amp;#x27;keep-alive&amp;#x27;, &amp;#x27;Verint-Session-ID&amp;#x27;: &amp;#x27;42334&amp;#x27;, &amp;#x27;Content-Type&amp;#x27;: &amp;#x27;application/json&amp;#x27;, &amp;#x27;Impact360AuthToken&amp;#x27;: &amp;#x27;UvF18RC0u7s1eoh3&amp;#x27;}]\n2024-04-24 16:36:22,593,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:185,test_getCaptVerifCSV_buildreq:: build request payload: {&amp;quot;org_id&amp;quot;: 708000501, &amp;quot;start_time&amp;quot;: &amp;quot;2023-12-18T00:00:00-00:00&amp;quot;, &amp;quot;end_time&amp;quot;: &amp;quot;2024-04-24T00:00:00-00:00&amp;quot;, &amp;quot;page_size&amp;quot;: 2000, &amp;quot;issue_filter&amp;quot;: {}}]\n2024-04-24 16:36:22,593,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:188,test_getCaptVerifCSV_buildreq:: build request url https://wfo.a31.verintcloudservices.com/api/av/capture_verification/v1/call_segments/issues/search/csv]\n2024-04-24 16:36:22,593,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:190,test_getCaptVerifCSV_buildreq():: finished]\n2024-04-24 16:36:22,594,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:196,test_getCaptVerifCSV_sendReq:: request start]\n2024-04-24 16:36:22,595,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:1052,Starting new HTTPS connection (1): wfo.a31.verintcloudservices.com:443]\n2024-04-24 16:36:23,183,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py:546,https://wfo.a31.verintcloudservices.com:443 &amp;quot;POST /api/av/capture_verification/v1/call_segments/issues/search/csv HTTP/1.1&amp;quot; 200 None]\n2024-04-24 16:36:23,184,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:221,test_getCaptVerifCSV_sendReq:: request start 2023-12-18T00:00:00-00:00]\n2024-04-24 16:36:23,184,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:224,test_getCaptVerifCSV_sendReq:: request start 2024-04-24T00:00:00-00:00]\n2024-04-24 16:36:23,184,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:228,test_getCaptVerifCSV_sendReq:: AWE Capt Verif csv request response received 200, now attempt write Capt Verif zip archive to C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\output\\CaptVerif\\CaptVerifCSV_session.zip]\n2024-04-24 16:36:23,185,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:235,test_getCaptVerifCSV_sendReq:: capt verif req response zip file write file OK]\n2024-04-24 16:36:23,185,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:243,test_getCaptVerifCSV_sendReq:: AWE Capt Verif zip retrieved OK]\n2024-04-24 16:36:23,197,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:256,test_getCaptVerifCSV_sendReq:: AWE capt verif zip archive unzip success]\n2024-04-24 16:36:23,198,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:263,test_getCaptVerifCSV_sendReq:: AWE Capt Verif confirm csv available after unzip]\n2024-04-24 16:36:23,198,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:274,test_getCaptVerifCSV_sendReq:: AWE Capt Verif unzipped csv now available at .\\output\\CaptVerif\\CaptureVerificationIssues-20240424153622UTC.csv, now try to open csv and read into df]\n2024-04-24 16:36:23,204,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:286,test_getCaptVerifCSV_sendReq:: AWE Capt Verif results csv read OK]\n2024-04-24 16:36:23,218,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:298,test_getCaptVerifCSV_sendReq:: AWE Capt Verif capt verif csv, calls found with issues: 0 ]\n2024-04-24 16:36:23,219,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:318,test_getCaptVerifCSV_sendReq:: AWE Capt Verif results w/o CDR errors csv written OK]\n2024-04-24 16:36:23,220,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_sendCaptVerifReqWithToken.py:334,***** test_getCaptVerifCSV_sendReq():: AWE Capt Verif API test routines finished]\n2024-04-24 16:36:23,220,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:237,test_collect_df:: test_getCaptVerifCSV() AWE Capt Verif reports issues with 0 calls]\n2024-04-24 16:36:23,220,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:241,test_collect_df:: test_getCaptVerifCSV() capt verif zip/csv results finished]\n2024-04-24 16:36:23,220,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:245,test_collect_df:: finished collecting Analytics and Verint API data]\n2024-04-24 16:36:23,221,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_all_start.py:62,test_all_start:: test_collect_EngIDs:: compare API returned data frames]\n2024-04-24 16:36:23,222,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:308,test_collectDF:: test_compare_df:: Analytics ED no. calls: 452, Verint S&amp;amp;R no. calls: 96, Verint Capture Verif no. calls 0 ]\n2024-04-24 16:36:23,223,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:311,test_collectDF:: test_compare_df:: start compare dataframes, collect Analytics Eng Detail engagement_ids]\n2024-04-24 16:36:23,225,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:316,test_collectDF:: test_compare_df:: Analytics ED eng ids are: ]\n                                                                                                                                                                                                                   0      47abc5de-27ae-4588-aeb3-9f2e6d9d9d33\n                                                                                                                                                                                                                  1      82bdcd15-2886-4702-9fc8-5b8d76c82b94\n                                                                                                                                                                                                                  2      fa0bef95-5a68-4af2-965d-d79915084b4d\n                                                                                                                                                                                                                  3      289020e5-1556-449d-abb1-65316e5fcf7d\n                                                                                                                                                                                                                  4      e1b456ae-ea91-4332-af2d-b9bc88c3e0c3\n                                                                                                                                                                                                                                         ...                 \n                                                                                                                                                                                                                  447    fe2534ee-6efd-442d-a5db-9c353dfc9667\n                                                                                                                                                                                                                  448    1ee9ae3d-88a5-49ef-841f-e80ac8656d8e\n                                                                                                                                                                                                                  449    1ee9ae3d-88a5-49ef-841f-e80ac8656d8e\n                                                                                                                                                                                                                  450    9a970d77-0e99-4e7f-bbaa-01d32842d1ed\n                                                                                                                                                                                                                  451    a4b3c777-c28c-4936-8b9e-2943a4b43871\n                                                                                                                                                                                                                  Name: engagement_id, Length: 452, dtype: object\n2024-04-24 16:36:23,225,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:324,test_collectDF:: test_compare_df:: Verint S&amp;amp;R returned engagement ids are: ]\n                                                                                                                                                                                                                   [&amp;#x27;1ee9ae3d-88a5-49ef-841f-e80ac8656d8e&amp;#x27;, &amp;#x27;1ee9ae3d-88a5-49ef-841f-e80ac8656d8e&amp;#x27;, &amp;#x27;fe2534ee-6efd-442d-a5db-9c353dfc9667&amp;#x27;, &amp;#x27;fe2534ee-6efd-442d-a5db-9c353dfc9667&amp;#x27;, &amp;#x27;ef9e32a5-8b4e-4880-be14-365c3ea6652e&amp;#x27;, &amp;#x27;7dd37696-2b96-4679-8347-c94c533acb9a&amp;#x27;, &amp;#x27;fd053318-5617-40c1-aea9-b418937aaa33&amp;#x27;, &amp;#x27;c8c0a859-af4d-4312-a71b-31b9829e78e7&amp;#x27;, &amp;#x27;d6aac2e1-e93b-48b1-a129-91e3fedf28f9&amp;#x27;, &amp;#x27;91b825f5-be26-4e00-811d-3e997ba831ec&amp;#x27;, &amp;#x27;97ee2067-212f-4cee-bdab-7da7691feb8b&amp;#x27;, &amp;#x27;45890ec1-c998-4ad3-a082-28beb0f1d3c7&amp;#x27;, &amp;#x27;057b7924-938a-4e52-b8f3-5e82f30e9101&amp;#x27;, &amp;#x27;f6aa1685-3e34-4cb9-9714-65399ba5e7e1&amp;#x27;, &amp;#x27;2b275cae-ddb8-4def-b253-5532d37ffdf1&amp;#x27;, &amp;#x27;db7a367a-2f4f-4041-9453-b4ae1bfa33b1&amp;#x27;, &amp;#x27;e16a92eb-a7da-4b7e-8555-c75b49cbc360&amp;#x27;, &amp;#x27;86bd3a58-6813-46cb-b381-494ed3909503&amp;#x27;, &amp;#x27;1cc1bef5-1be8-43cd-8bf1-89b738b086eb&amp;#x27;, &amp;#x27;e227f0bf-4dd2-46f0-8353-fba21c4587cf&amp;#x27;, &amp;#x27;df45e815-8399-41dd-ac1e-57e0682b262d&amp;#x27;, &amp;#x27;5982aae6-e3df-469e-ba57-064cb2bd71ce&amp;#x27;, &amp;#x27;c88d44d5-4665-45a0-bf43-743c6a86936c&amp;#x27;, &amp;#x27;5bf5713b-6e4a-446f-a8b2-4cd5cb681eb4&amp;#x27;, &amp;#x27;7b8d0d00-381c-446a-a641-eafe53f5a088&amp;#x27;, &amp;#x27;52083bf5-103c-4abb-b180-2ad8c3c501ba&amp;#x27;, &amp;#x27;1c330901-2802-4ef7-981b-c2f7d101b774&amp;#x27;, &amp;#x27;eb0075ce-7381-44e9-a163-61b32df0f9d6&amp;#x27;, &amp;#x27;62e25ef9-9d67-4146-9c75-b700b8441a45&amp;#x27;, &amp;#x27;ab3da06c-33f7-4376-a0d0-089db7fd18e1&amp;#x27;, &amp;#x27;c8147e17-eac3-482a-8999-ea3ad665de46&amp;#x27;, &amp;#x27;5da8b529-6f3a-4e71-8b5b-7eb55f50e8f7&amp;#x27;, &amp;#x27;b124f493-efa2-471f-a2dc-d3fdf412c284&amp;#x27;, &amp;#x27;7826067b-c535-4d14-94c7-3ee09dba02b6&amp;#x27;, &amp;#x27;73b42908-d65a-4717-9e2a-349d71449593&amp;#x27;, &amp;#x27;109551de-c9ae-4ad7-9342-7d2ccb2af64a&amp;#x27;, &amp;#x27;1fac8078-3141-4b0f-a56f-99a4efeff5e5&amp;#x27;, &amp;#x27;1a104795-e9d8-4987-abca-32e4048da3a4&amp;#x27;, &amp;#x27;69505de0-cf07-4ec6-8b78-14999994e7f4&amp;#x27;, &amp;#x27;b12d3767-501d-4438-9d16-9a983ca26f15&amp;#x27;, &amp;#x27;8730ed12-ead5-4200-ab8a-90a14dacad73&amp;#x27;, &amp;#x27;2af8822a-ff82-4fcd-ac81-de877086912b&amp;#x27;, &amp;#x27;5121178c-989b-494b-be1f-24235b6bad03&amp;#x27;, &amp;#x27;a93c66f2-1840-4843-a031-483926e9fcaa&amp;#x27;, &amp;#x27;c35e8d7e-c809-4202-950b-ff51435bc9d1&amp;#x27;, &amp;#x27;0aeedf4a-42c5-4b68-9ce4-d2c11f53d7c8&amp;#x27;, &amp;#x27;86d208dd-ed5d-46c1-8e0c-dae02e28c2da&amp;#x27;, &amp;#x27;13d5d0a6-519f-4404-9e46-59513a4d7ad0&amp;#x27;, &amp;#x27;0c69e839-a390-41bd-8bc0-c0fa59e4dec1&amp;#x27;, &amp;#x27;143df359-7f7e-4532-9c4c-06ecead50515&amp;#x27;, &amp;#x27;a5459e8e-8875-44dd-a5ef-0cc3ba749e62&amp;#x27;, &amp;#x27;c3f77329-01bc-46ac-b33a-1af5ee30eca5&amp;#x27;, &amp;#x27;7c3f44c3-0dfe-453d-8ee8-5a70e0d66a8b&amp;#x27;, &amp;#x27;87581aae-3188-40c4-9a0a-e06ed0970395&amp;#x27;, &amp;#x27;368eeabc-fd2c-456c-aca7-666e08217421&amp;#x27;, &amp;#x27;c6ac7200-4100-408a-a754-0ce1da7063aa&amp;#x27;, &amp;#x27;c60f101a-cc2c-494e-9ff0-153e1826162a&amp;#x27;, &amp;#x27;c982dd58-c936-4257-acec-ca1955e13dc8&amp;#x27;, &amp;#x27;947a1207-5f32-44c1-bf5c-51b06501631c&amp;#x27;, &amp;#x27;10ef2b84-d4a0-4ecb-8304-55fdb9bbb93f&amp;#x27;, &amp;#x27;18b94980-b031-4596-b0ad-32d7445c1bef&amp;#x27;, &amp;#x27;1d6a4d4c-d1bd-444e-9fa1-6e14a0540b1b&amp;#x27;, &amp;#x27;79a7efac-7a27-4981-aae1-2b9eedc56a42&amp;#x27;, &amp;#x27;d24b6583-32c9-4c89-960d-53e5ef3a4316&amp;#x27;, &amp;#x27;c91e3204-030e-400b-a282-a326d0bd07d1&amp;#x27;, &amp;#x27;c08a59bc-e36d-497b-a484-5bbb4c7dce4a&amp;#x27;, &amp;#x27;90d2a5ef-24ff-46ae-b8f5-99c09acf55c5&amp;#x27;, &amp;#x27;3b8549f9-3f85-4633-b101-69d5950399b3&amp;#x27;, &amp;#x27;fd3586e3-7931-45c6-b722-49a7a8b047b6&amp;#x27;, &amp;#x27;c94aacd5-398a-4549-b1ed-c46ea5b2ed36&amp;#x27;, &amp;#x27;de8ea0a5-b221-4c13-b8fa-e901898e11d6&amp;#x27;, &amp;#x27;e04a86c9-a0d0-4b6a-9a98-20345fbe178d&amp;#x27;, &amp;#x27;34979836-56f1-41b7-9873-b7570112a44a&amp;#x27;, &amp;#x27;7fe7b48b-1a3a-432b-b581-1dbaa1d4159f&amp;#x27;, &amp;#x27;e249b5b6-66b2-469f-9b52-84df65e9b56a&amp;#x27;, &amp;#x27;bd80a2c1-cca5-4e3b-80e5-763fe96bd549&amp;#x27;, &amp;#x27;29dc6734-b0a1-42ec-9109-dbc87768d593&amp;#x27;, &amp;#x27;e1759c56-901f-477e-82a3-1888678bf869&amp;#x27;, &amp;#x27;81f265d0-1bdb-4a69-8559-aa015556bdd0&amp;#x27;, &amp;#x27;215e1dd8-9789-4414-b2db-464b56819351&amp;#x27;, &amp;#x27;8b736d31-612c-4e6b-91b3-09695d38f84f&amp;#x27;, &amp;#x27;3ae98a35-26c1-4266-ab90-66c9ca0a3e7e&amp;#x27;, &amp;#x27;f3a3a592-5e6d-486e-8eae-0a3f26a772d0&amp;#x27;, &amp;#x27;3ff7cc44-1de8-4481-ba92-aa9ffbd076d4&amp;#x27;, &amp;#x27;8dcb7023-5b76-4e62-b36e-dd34b6209754&amp;#x27;, &amp;#x27;b8abe658-d42b-4d48-96d5-88cf4bcc6b06&amp;#x27;, &amp;#x27;48abe2f1-f6ae-4d6e-8ef8-4f132366cd63&amp;#x27;, &amp;#x27;07e850c3-0d05-4c0c-9a33-2ee1a4abc7e2&amp;#x27;, &amp;#x27;02f00158-4ea7-4b0f-bc54-2563fd213f41&amp;#x27;, &amp;#x27;de4673a4-9c6f-4f6f-9a77-3e7f0d40787e&amp;#x27;, &amp;#x27;05e868d7-26fa-43fc-9a6f-d3c5531df457&amp;#x27;, &amp;#x27;e1b456ae-ea91-4332-af2d-b9bc88c3e0c3&amp;#x27;, &amp;#x27;289020e5-1556-449d-abb1-65316e5fcf7d&amp;#x27;, &amp;#x27;fa0bef95-5a68-4af2-965d-d79915084b4d&amp;#x27;, &amp;#x27;82bdcd15-2886-4702-9fc8-5b8d76c82b94&amp;#x27;, &amp;#x27;47abc5de-27ae-4588-aeb3-9f2e6d9d9d33&amp;#x27;]\n2024-04-24 16:36:23,225,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:327,test_collectDF:: test_compare_df:: check that all CCaaS Analytics ED Eng call IDs (as reference) match all listed call Eng IDs from AWE S&amp;amp;R ]\n2024-04-24 16:36:23,294,ERROR, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:366,test_compare_df:: test_compare_df() !!!!!!!!  ERROR 356 calls reported in Analytics (as reference) not in Verint S&amp;amp;R !!!!!!!]\n2024-04-24 16:36:23,358,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:369,test_compare_df:: test_compare_df() ERROR !!!!!!!! listing call eng ids reported in Analytics not in Verint S&amp;amp;R :     disposition_code_sk  ... disposition_code_description]\n                                                                                                                                                                                                                  451                None  ...                         None\n                                                                                                                                                                                                                  450                None  ...                         None\n                                                                                                                                                                                                                  445                None  ...                         None\n                                                                                                                                                                                                                  443                None  ...                         None\n                                                                                                                                                                                                                  442                None  ...                         None\n                                                                                                                                                                                                                  ..                  ...  ...                          ...\n                                                                                                                                                                                                                  40                 None  ...                         None\n                                                                                                                                                                                                                  36                 None  ...                         None\n                                                                                                                                                                                                                  33                 None  ...                         None\n                                                                                                                                                                                                                  30                 None  ...                         None\n                                                                                                                                                                                                                  29                 None  ...                         None\n                                                                                                                                                                                                                  \n                                                                                                                                                                                                                  [356 rows x 94 columns]\n2024-04-24 16:36:23,358,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:373,test_compare_df:: test_compare_df() attempt dump ERROR calls not recorded but in Analytics ED to csv in dir: ./output/EngDetailedReport/testED-DailyNotReconciled.csv]\n2024-04-24 16:36:23,365,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectDF.py:388,test_compare_df::test_compare_df() call mismatch csv written ok]\n\n&#34;}], &#34;tests/test_collectWFO_CertExpiry.py::test_collectCertExpiry&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;tests/test_collectWFO_CertExpiry.py::test_collectCertExpiry&#34;, &#34;duration&#34;: &#34;392 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_collectWFO_CertExpiry.py::test_collectCertExpiry&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;392 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log setup ------------------------------\n2024-04-24 16:36:23,383,DEBUG, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:37,conftest:: test_read_config_file() start]\n2024-04-24 16:36:23,394,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:67,conftest:: test_read_config_file() today date: 2024-04-24]\n2024-04-24 16:36:23,395,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:68,conftest:: test_read_config_file() current time: 16:36:10]\n2024-04-24 16:36:23,395,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:73,conftest:: test_read_config_file() python version: 3.12.1]\n2024-04-24 16:36:23,395,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:76,conftest:: test_read_config_file() pytest version:  8.0.0rc1]\n2024-04-24 16:36:23,395,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\conftest.py:80,conftest:: test_read_config_file() finished]\n\n------------------------------ Captured log call -------------------------------\n2024-04-24 16:36:23,624,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectWFO_CertExpiry.py:31,test_collectCertExpiry::  start]\n2024-04-24 16:36:23,624,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectWFO_CertExpiry.py:32,test_collectCertExpiry::  hostname: avayaqa3-smc-dev3-appgw.verintenglab.com]\n2024-04-24 16:36:23,624,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectWFO_CertExpiry.py:33,test_collectCertExpiry::  IP addresses: [(&amp;lt;AddressFamily.AF_INET: 2&amp;gt;, 0, 6, &amp;#x27;&amp;#x27;, (&amp;#x27;20.103.248.223&amp;#x27;, 80))] [(&amp;lt;AddressFamily.AF_INET: 2&amp;gt;, 0, 6, &amp;#x27;&amp;#x27;, (&amp;#x27;20.103.248.223&amp;#x27;, 443))]]\n2024-04-24 16:36:23,773,ERROR, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectWFO_CertExpiry.py:67, !!!!!! test_collectCertExpiry: WFO cert within 14 days expiry, expiry date: 2024-05-04 03:04:20]\n2024-04-24 16:36:23,773,INFO, [C:\\Users\\victorm\\OneDrive - Avaya\\Documents\\PycharmProjects\\collectVerintAPI+Analytics+CheckWFO_CertExpiry\\collectVerintAPI+Analytics+collectWFO_Cert\\tests\\test_collectWFO_CertExpiry.py:76,test_collectCertExpiry::  finished]\n\n&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;report.html&#34;}"></div>
+    <script>
+      (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
+
+class DataManager {
+    setManager(data) {
+        const collapsedCategories = [...getCollapsedCategory(data.renderCollapsed)]
+        const collapsedIds = []
+        const tests = Object.values(data.tests).flat().map((test, index) => {
+            const collapsed = collapsedCategories.includes(test.result.toLowerCase())
+            const id = `test_${index}`
+            if (collapsed) {
+                collapsedIds.push(id)
+            }
+            return {
+                ...test,
+                id,
+                collapsed,
+            }
+        })
+        const dataBlob = { ...data, tests }
+        this.data = { ...dataBlob }
+        this.renderData = { ...dataBlob }
+        setCollapsedIds(collapsedIds)
+    }
+
+    get allData() {
+        return { ...this.data }
+    }
+
+    resetRender() {
+        this.renderData = { ...this.data }
+    }
+
+    setRender(data) {
+        this.renderData.tests = [...data]
+    }
+
+    toggleCollapsedItem(id) {
+        this.renderData.tests = this.renderData.tests.map((test) =>
+            test.id === id ? { ...test, collapsed: !test.collapsed } : test,
+        )
+    }
+
+    set allCollapsed(collapsed) {
+        this.renderData = { ...this.renderData, tests: [...this.renderData.tests.map((test) => (
+            { ...test, collapsed }
+        ))] }
+    }
+
+    get testSubset() {
+        return [...this.renderData.tests]
+    }
+
+    get environment() {
+        return this.renderData.environment
+    }
+
+    get initialSort() {
+        return this.data.initialSort
+    }
+}
+
+module.exports = {
+    manager: new DataManager(),
+}
+
+},{"./storage.js":8}],2:[function(require,module,exports){
+const mediaViewer = require('./mediaviewer.js')
+const templateEnvRow = document.getElementById('template_environment_row')
+const templateResult = document.getElementById('template_results-table__tbody')
+
+function htmlToElements(html) {
+    const temp = document.createElement('template')
+    temp.innerHTML = html
+    return temp.content.childNodes
+}
+
+const find = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return elem.querySelector(selector)
+}
+
+const findAll = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return [...elem.querySelectorAll(selector)]
+}
+
+const dom = {
+    getStaticRow: (key, value) => {
+        const envRow = templateEnvRow.content.cloneNode(true)
+        const isObj = typeof value === 'object' && value !== null
+        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
+
+        const valuesElement = htmlToElements(
+            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
+        const td = findAll('td', envRow)
+        td[0].textContent = key
+        td[1].appendChild(valuesElement)
+
+        return envRow
+    },
+    getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
+        const resultBody = templateResult.content.cloneNode(true)
+        resultBody.querySelector('tbody').classList.add(result.toLowerCase())
+        resultBody.querySelector('tbody').id = testId
+        resultBody.querySelector('.collapsible').dataset.id = id
+
+        resultsTableRow.forEach((html) => {
+            const t = document.createElement('template')
+            t.innerHTML = html
+            resultBody.querySelector('.collapsible').appendChild(t.content)
+        })
+
+        if (log) {
+            // Wrap lines starting with "E" with span.error to color those lines red
+            const wrappedLog = log.replace(/^E.*$/gm, (match) => `<span class="error">${match}</span>`)
+            resultBody.querySelector('.log').innerHTML = wrappedLog
+        } else {
+            resultBody.querySelector('.log').remove()
+        }
+
+        if (collapsed) {
+            resultBody.querySelector('.collapsible > td')?.classList.add('collapsed')
+            resultBody.querySelector('.extras-row').classList.add('hidden')
+        } else {
+            resultBody.querySelector('.collapsible > td')?.classList.remove('collapsed')
+        }
+
+        const media = []
+        extras?.forEach(({ name, format_type, content }) => {
+            if (['image', 'video'].includes(format_type)) {
+                media.push({ path: content, name, format_type })
+            }
+
+            if (format_type === 'html') {
+                resultBody.querySelector('.extraHTML').insertAdjacentHTML('beforeend', `<div>${content}</div>`)
+            }
+        })
+        mediaViewer.setup(resultBody, media)
+
+        // Add custom html from the pytest_html_results_table_html hook
+        tableHtml?.forEach((item) => {
+            resultBody.querySelector('td[class="extra"]').insertAdjacentHTML('beforeend', item)
+        })
+
+        return resultBody
+    },
+}
+
+module.exports = {
+    dom,
+    htmlToElements,
+    find,
+    findAll,
+}
+
+},{"./mediaviewer.js":6}],3:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const storageModule = require('./storage.js')
+
+const getFilteredSubSet = (filter) =>
+    manager.allData.tests.filter(({ result }) => filter.includes(result.toLowerCase()))
+
+const doInitFilter = () => {
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+}
+
+const doFilter = (type, show) => {
+    if (show) {
+        storageModule.showCategory(type)
+    } else {
+        storageModule.hideCategory(type)
+    }
+
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+
+    const sortColumn = storageModule.getSort()
+    doSort(sortColumn, true)
+}
+
+module.exports = {
+    doFilter,
+    doInitFilter,
+}
+
+},{"./datamanager.js":1,"./sort.js":7,"./storage.js":8}],4:[function(require,module,exports){
+const { redraw, bindEvents, renderStatic } = require('./main.js')
+const { doInitFilter } = require('./filter.js')
+const { doInitSort } = require('./sort.js')
+const { manager } = require('./datamanager.js')
+const data = JSON.parse(document.getElementById('data-container').dataset.jsonblob)
+
+function init() {
+    manager.setManager(data)
+    doInitFilter()
+    doInitSort()
+    renderStatic()
+    redraw()
+    bindEvents()
+}
+
+init()
+
+},{"./datamanager.js":1,"./filter.js":3,"./main.js":5,"./sort.js":7}],5:[function(require,module,exports){
+const { dom, find, findAll } = require('./dom.js')
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const { doFilter } = require('./filter.js')
+const {
+    getVisible,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    getSortDirection,
+    possibleFilters,
+} = require('./storage.js')
+
+const removeChildren = (node) => {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild)
+    }
+}
+
+const renderStatic = () => {
+    const renderEnvironmentTable = () => {
+        const environment = manager.environment
+        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
+        const table = document.getElementById('environment')
+        removeChildren(table)
+        rows.forEach((row) => table.appendChild(row))
+    }
+    renderEnvironmentTable()
+}
+
+const addItemToggleListener = (elem) => {
+    elem.addEventListener('click', ({ target }) => {
+        const id = target.parentElement.dataset.id
+        manager.toggleCollapsedItem(id)
+
+        const collapsedIds = getCollapsedIds()
+        if (collapsedIds.includes(id)) {
+            const updated = collapsedIds.filter((item) => item !== id)
+            setCollapsedIds(updated)
+        } else {
+            collapsedIds.push(id)
+            setCollapsedIds(collapsedIds)
+        }
+        redraw()
+    })
+}
+
+const renderContent = (tests) => {
+    const sortAttr = getSort(manager.initialSort)
+    const sortAsc = JSON.parse(getSortDirection())
+    const rows = tests.map(dom.getResultTBody)
+    const table = document.getElementById('results-table')
+    const tableHeader = document.getElementById('results-table-head')
+
+    const newTable = document.createElement('table')
+    newTable.id = 'results-table'
+
+    // remove all sorting classes and set the relevant
+    findAll('.sortable', tableHeader).forEach((elem) => elem.classList.remove('asc', 'desc'))
+    tableHeader.querySelector(`.sortable[data-column-type="${sortAttr}"]`)?.classList.add(sortAsc ? 'desc' : 'asc')
+    newTable.appendChild(tableHeader)
+
+    if (!rows.length) {
+        const emptyTable = document.getElementById('template_results-table__body--empty').content.cloneNode(true)
+        newTable.appendChild(emptyTable)
+    } else {
+        rows.forEach((row) => {
+            if (!!row) {
+                findAll('.collapsible td:not(.col-links', row).forEach(addItemToggleListener)
+                find('.logexpander', row).addEventListener('click',
+                    (evt) => evt.target.parentNode.classList.toggle('expanded'),
+                )
+                newTable.appendChild(row)
+            }
+        })
+    }
+
+    table.replaceWith(newTable)
+}
+
+const renderDerived = () => {
+    const currentFilter = getVisible()
+    possibleFilters.forEach((result) => {
+        const input = document.querySelector(`input[data-test-result="${result}"]`)
+        input.checked = currentFilter.includes(result)
+    })
+}
+
+const bindEvents = () => {
+    const filterColumn = (evt) => {
+        const { target: element } = evt
+        const { testResult } = element.dataset
+
+        doFilter(testResult, element.checked)
+        const collapsedIds = getCollapsedIds()
+        const updated = manager.renderData.tests.map((test) => {
+            return {
+                ...test,
+                collapsed: collapsedIds.includes(test.id),
+            }
+        })
+        manager.setRender(updated)
+        redraw()
+    }
+
+    const header = document.getElementById('environment-header')
+    header.addEventListener('click', () => {
+        const table = document.getElementById('environment')
+        table.classList.toggle('hidden')
+        header.classList.toggle('collapsed')
+    })
+
+    findAll('input[name="filter_checkbox"]').forEach((elem) => {
+        elem.addEventListener('click', filterColumn)
+    })
+
+    findAll('.sortable').forEach((elem) => {
+        elem.addEventListener('click', (evt) => {
+            const { target: element } = evt
+            const { columnType } = element.dataset
+            doSort(columnType)
+            redraw()
+        })
+    })
+
+    document.getElementById('show_all_details').addEventListener('click', () => {
+        manager.allCollapsed = false
+        setCollapsedIds([])
+        redraw()
+    })
+    document.getElementById('hide_all_details').addEventListener('click', () => {
+        manager.allCollapsed = true
+        const allIds = manager.renderData.tests.map((test) => test.id)
+        setCollapsedIds(allIds)
+        redraw()
+    })
+}
+
+const redraw = () => {
+    const { testSubset } = manager
+
+    renderContent(testSubset)
+    renderDerived()
+}
+
+module.exports = {
+    redraw,
+    bindEvents,
+    renderStatic,
+}
+
+},{"./datamanager.js":1,"./dom.js":2,"./filter.js":3,"./sort.js":7,"./storage.js":8}],6:[function(require,module,exports){
+class MediaViewer {
+    constructor(assets) {
+        this.assets = assets
+        this.index = 0
+    }
+
+    nextActive() {
+        this.index = this.index === this.assets.length - 1 ? 0 : this.index + 1
+        return [this.activeFile, this.index]
+    }
+
+    prevActive() {
+        this.index = this.index === 0 ? this.assets.length - 1 : this.index -1
+        return [this.activeFile, this.index]
+    }
+
+    get currentIndex() {
+        return this.index
+    }
+
+    get activeFile() {
+        return this.assets[this.index]
+    }
+}
+
+
+const setup = (resultBody, assets) => {
+    if (!assets.length) {
+        resultBody.querySelector('.media').classList.add('hidden')
+        return
+    }
+
+    const mediaViewer = new MediaViewer(assets)
+    const container = resultBody.querySelector('.media-container')
+    const leftArrow = resultBody.querySelector('.media-container__nav--left')
+    const rightArrow = resultBody.querySelector('.media-container__nav--right')
+    const mediaName = resultBody.querySelector('.media__name')
+    const counter = resultBody.querySelector('.media__counter')
+    const imageEl = resultBody.querySelector('img')
+    const sourceEl = resultBody.querySelector('source')
+    const videoEl = resultBody.querySelector('video')
+
+    const setImg = (media, index) => {
+        if (media?.format_type === 'image') {
+            imageEl.src = media.path
+
+            imageEl.classList.remove('hidden')
+            videoEl.classList.add('hidden')
+        } else if (media?.format_type === 'video') {
+            sourceEl.src = media.path
+
+            videoEl.classList.remove('hidden')
+            imageEl.classList.add('hidden')
+        }
+
+        mediaName.innerText = media?.name
+        counter.innerText = `${index + 1} / ${assets.length}`
+    }
+    setImg(mediaViewer.activeFile, mediaViewer.currentIndex)
+
+    const moveLeft = () => {
+        const [media, index] = mediaViewer.prevActive()
+        setImg(media, index)
+    }
+    const doRight = () => {
+        const [media, index] = mediaViewer.nextActive()
+        setImg(media, index)
+    }
+    const openImg = () => {
+        window.open(mediaViewer.activeFile.path, '_blank')
+    }
+    if (assets.length === 1) {
+        container.classList.add('media-container--fullscreen')
+    } else {
+        leftArrow.addEventListener('click', moveLeft)
+        rightArrow.addEventListener('click', doRight)
+    }
+    imageEl.addEventListener('click', openImg)
+}
+
+module.exports = {
+    setup,
+}
+
+},{}],7:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const storageModule = require('./storage.js')
+
+const genericSort = (list, key, ascending, customOrder) => {
+    let sorted
+    if (customOrder) {
+        sorted = list.sort((a, b) => {
+            const aValue = a.result.toLowerCase()
+            const bValue = b.result.toLowerCase()
+
+            const aIndex = customOrder.findIndex((item) => item.toLowerCase() === aValue)
+            const bIndex = customOrder.findIndex((item) => item.toLowerCase() === bValue)
+
+            // Compare the indices to determine the sort order
+            return aIndex - bIndex
+        })
+    } else {
+        sorted = list.sort((a, b) => a[key] === b[key] ? 0 : a[key] > b[key] ? 1 : -1)
+    }
+
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const durationSort = (list, ascending) => {
+    const parseDuration = (duration) => {
+        if (duration.includes(':')) {
+            // If it's in the format "HH:mm:ss"
+            const [hours, minutes, seconds] = duration.split(':').map(Number)
+            return (hours * 3600 + minutes * 60 + seconds) * 1000
+        } else {
+            // If it's in the format "nnn ms"
+            return parseInt(duration)
+        }
+    }
+    const sorted = list.sort((a, b) => parseDuration(a['duration']) - parseDuration(b['duration']))
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const doInitSort = () => {
+    const type = storageModule.getSort(manager.initialSort)
+    const ascending = storageModule.getSortDirection()
+    const list = manager.testSubset
+    const initialOrder = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed', 'Skipped', 'Passed']
+
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    if (type?.toLowerCase() === 'original') {
+        manager.setRender(list)
+    } else {
+        let sortedList
+        switch (type) {
+        case 'duration':
+            sortedList = durationSort(list, ascending)
+            break
+        case 'result':
+            sortedList = genericSort(list, type, ascending, initialOrder)
+            break
+        default:
+            sortedList = genericSort(list, type, ascending)
+            break
+        }
+        manager.setRender(sortedList)
+    }
+}
+
+const doSort = (type, skipDirection) => {
+    const newSortType = storageModule.getSort(manager.initialSort) !== type
+    const currentAsc = storageModule.getSortDirection()
+    let ascending
+    if (skipDirection) {
+        ascending = currentAsc
+    } else {
+        ascending = newSortType ? false : !currentAsc
+    }
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    const list = manager.testSubset
+    const sortedList = type === 'duration' ? durationSort(list, ascending) : genericSort(list, type, ascending)
+    manager.setRender(sortedList)
+}
+
+module.exports = {
+    doInitSort,
+    doSort,
+}
+
+},{"./datamanager.js":1,"./storage.js":8}],8:[function(require,module,exports){
+const possibleFilters = [
+    'passed',
+    'skipped',
+    'failed',
+    'error',
+    'xfailed',
+    'xpassed',
+    'rerun',
+]
+
+const getVisible = () => {
+    const url = new URL(window.location.href)
+    const settings = new URLSearchParams(url.search).get('visible')
+    const lower = (item) => {
+        const lowerItem = item.toLowerCase()
+        if (possibleFilters.includes(lowerItem)) {
+            return lowerItem
+        }
+        return null
+    }
+    return settings === null ?
+        possibleFilters :
+        [...new Set(settings?.split(',').map(lower).filter((item) => item))]
+}
+
+const hideCategory = (categoryToHide) => {
+    const url = new URL(window.location.href)
+    const visibleParams = new URLSearchParams(url.search).get('visible')
+    const currentVisible = visibleParams ? visibleParams.split(',') : [...possibleFilters]
+    const settings = [...new Set(currentVisible)].filter((f) => f !== categoryToHide).join(',')
+
+    url.searchParams.set('visible', settings)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const showCategory = (categoryToShow) => {
+    if (typeof window === 'undefined') {
+        return
+    }
+    const url = new URL(window.location.href)
+    const currentVisible = new URLSearchParams(url.search).get('visible')?.split(',').filter(Boolean) ||
+        [...possibleFilters]
+    const settings = [...new Set([categoryToShow, ...currentVisible])]
+    const noFilter = possibleFilters.length === settings.length || !settings.length
+
+    noFilter ? url.searchParams.delete('visible') : url.searchParams.set('visible', settings.join(','))
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getSort = (initialSort) => {
+    const url = new URL(window.location.href)
+    let sort = new URLSearchParams(url.search).get('sort')
+    if (!sort) {
+        sort = initialSort || 'result'
+    }
+    return sort
+}
+
+const setSort = (type) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('sort', type)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getCollapsedCategory = (renderCollapsed) => {
+    let categories
+    if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        const collapsedItems = new URLSearchParams(url.search).get('collapsed')
+        switch (true) {
+        case !renderCollapsed && collapsedItems === null:
+            categories = ['passed']
+            break
+        case collapsedItems?.length === 0 || /^["']{2}$/.test(collapsedItems):
+            categories = []
+            break
+        case /^all$/.test(collapsedItems) || collapsedItems === null && /^all$/.test(renderCollapsed):
+            categories = [...possibleFilters]
+            break
+        default:
+            categories = collapsedItems?.split(',').map((item) => item.toLowerCase()) || renderCollapsed
+            break
+        }
+    } else {
+        categories = []
+    }
+    return categories
+}
+
+const getSortDirection = () => JSON.parse(sessionStorage.getItem('sortAsc')) || false
+const setSortDirection = (ascending) => sessionStorage.setItem('sortAsc', ascending)
+
+const getCollapsedIds = () => JSON.parse(sessionStorage.getItem('collapsedIds')) || []
+const setCollapsedIds = (list) => sessionStorage.setItem('collapsedIds', JSON.stringify(list))
+
+module.exports = {
+    getVisible,
+    hideCategory,
+    showCategory,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    setSort,
+    getSortDirection,
+    setSortDirection,
+    getCollapsedCategory,
+    possibleFilters,
+}
+
+},{}]},{},[4]);
+    </script>
+  </footer>
+</html>

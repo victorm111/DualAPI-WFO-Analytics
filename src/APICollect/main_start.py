@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 # collect code version
 
 try:
-    from src.APICollect.is_number.__init__ import (__version__)
+    from src.APICollect.__init__ import (__version__)
 except ModuleNotFoundError:
     #exec(open(".src/APICollect/is_number/version.py").read())
     print("package version not read from git")

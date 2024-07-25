@@ -2,12 +2,8 @@ import os
 from os import path
 import versioneer
 import setuptools
-from setuptools import setup
 
 
-# setup.cfg
-if __name__=='__main__':
-    setup()
 
 here = path.abspath((path.dirname(__file__)))
 print('setup.py path is:', here)
